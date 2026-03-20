@@ -29,6 +29,7 @@ interface SimState {
   animating: boolean;
   theme: Theme;
   menuOpen: boolean;
+  docsOpen: boolean;
 
   setParam: <K extends keyof SimParams>(key: K, value: SimParams[K]) => void;
   setBowType: (bowType: BowType) => void;
@@ -38,6 +39,7 @@ interface SimState {
   addWeight: (weight: Weight) => void;
   setArrow: <K extends keyof ArrowComponents>(key: K, value: ArrowComponents[K]) => void;
   setWindSpeed: (speed: number) => void;
+  setDocsOpen: (open: boolean) => void;
   setAnimating: (animating: boolean) => void;
   setTheme: (id: string) => void;
   setMenuOpen: (open: boolean) => void;
@@ -75,6 +77,7 @@ export const useSimStore = create<SimState>((set) => ({
   animating: true,
   theme: getThemeById(loadThemeId()),
   menuOpen: false,
+  docsOpen: false,
 
   setParam: (key, value) =>
     set((state) => ({ params: { ...state.params, [key]: value } })),
@@ -116,6 +119,8 @@ export const useSimStore = create<SimState>((set) => ({
     set((state) => ({ arrow: { ...state.arrow, [key]: value } })),
 
   setWindSpeed: (speed) => set({ windSpeed: speed }),
+
+  setDocsOpen: (open) => set({ docsOpen: open }),
 
   setAnimating: (animating) => set({ animating }),
 

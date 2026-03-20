@@ -12,6 +12,7 @@ import { HarmonicSpectrum } from "./components/HarmonicSpectrum/HarmonicSpectrum
 import { DrawCurve } from "./components/DrawCurve/DrawCurve.tsx";
 import { EnergyBreakdown } from "./components/EnergyBreakdown/EnergyBreakdown.tsx";
 import { BallisticsTable } from "./components/Ballistics/BallisticsTable.tsx";
+import { DocsPanel } from "./components/Docs/DocsPanel.tsx";
 import { PlacementGuide } from "./components/Layout/PlacementGuide.tsx";
 
 type Tab = "bow" | "arrow";
@@ -19,6 +20,8 @@ type Tab = "bow" | "arrow";
 export default function App() {
   const params = useSimStore((s) => s.params);
   const weights = useSimStore((s) => s.weights);
+  const docsOpen = useSimStore((s) => s.docsOpen);
+  const setDocsOpen = useSimStore((s) => s.setDocsOpen);
   const [tab, setTab] = useState<Tab>("bow");
 
   const physics = useMemo(() => computePhysics(params, weights), [params, weights]);
@@ -122,6 +125,8 @@ export default function App() {
           </div>
         </div>
       </div>
+
+      {docsOpen && <DocsPanel onClose={() => setDocsOpen(false)} />}
     </ThemeProvider>
   );
 }

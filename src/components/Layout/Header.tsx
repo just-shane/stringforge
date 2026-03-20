@@ -1,6 +1,9 @@
+import { useSimStore } from "../../store.ts";
 import { HamburgerMenu } from "../Menu/HamburgerMenu.tsx";
 
 export function Header() {
+  const setDocsOpen = useSimStore((s) => s.setDocsOpen);
+
   return (
     <div
       className="flex items-center justify-between px-6 py-4"
@@ -26,7 +29,18 @@ export function Header() {
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => setDocsOpen(true)}
+          className="px-3 py-1.5 rounded-md text-[10px] font-mono uppercase tracking-wider cursor-pointer transition-all"
+          style={{
+            background: "var(--c-surface)",
+            border: "1px solid var(--c-border)",
+            color: "var(--c-text-muted)",
+          }}
+        >
+          Docs
+        </button>
         <div
           className="text-[9px] font-mono text-right leading-relaxed max-sm:hidden"
           style={{ color: "var(--c-text-faint)" }}
