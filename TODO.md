@@ -175,6 +175,19 @@
 
 ---
 
+## ✅ Guided Tour & Versioning (Complete)
+
+- [x] **React Joyride integration** — 11-step guided tour covering all major sections
+- [x] **Auto-launch for new users** — Tour shows on first visit, remembers completion in localStorage
+- [x] **Version-aware reset** — Tour re-triggers when app version changes so users see new features
+- [x] **Replay button** — "Replay Guided Tour" link at bottom of main panel
+- [x] **Theme-matched styling** — Tour tooltips match active theme colors
+- [x] **Version tracking** — Centralized `src/lib/version.ts` with `APP_VERSION`, semantic versioning (MAJOR.MINOR.PATCH), changelog
+- [x] **Version display** — Header shows current version from single source of truth
+- [x] **package.json synced** — `3.0.0`
+
+---
+
 ## 🔮 Phase 7: Platform & Polish
 
 ### 7.1 Performance

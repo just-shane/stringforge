@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { useSimStore } from "./store.ts";
 import { computePhysics } from "./lib/physics.ts";
 import { decodeShareLink } from "./lib/bows.ts";
@@ -23,6 +23,7 @@ import { SoundAnalysis } from "./components/SoundAnalysis/SoundAnalysis.tsx";
 import { ShareExport } from "./components/ShareExport/ShareExport.tsx";
 import { GlossaryPanel } from "./components/Glossary/GlossaryPanel.tsx";
 import { SetupWizard } from "./components/Wizard/SetupWizard.tsx";
+import { GuidedTour } from "./components/Tour/GuidedTour.tsx";
 
 type Tab = "bow" | "arrow" | "tuning" | "database" | "profiles";
 
@@ -40,6 +41,7 @@ export default function App() {
   const setWeights = useSimStore((s) => s.setWeights);
   const setArrow = useSimStore((s) => s.setArrow);
   const [tab, setTab] = useState<Tab>("bow");
+  const [tourRunning, setTourRunning] = useState(false);
 
   const physics = useMemo(() => computePhysics(params, weights), [params, weights]);
 
@@ -71,10 +73,19 @@ export default function App() {
     }
   }, []);
 
+  const handleReplayTour = useCallback(() => {
+    setTourRunning(true);
+  }, []);
+
   return (
     <ThemeProvider>
       <div className="min-h-screen" style={{ background: "var(--c-bg)" }}>
         <Header />
+
+        <GuidedTour
+          forceRun={tourRunning}
+          onFinish={() => setTourRunning(false)}
+        />
 
         <div className="flex max-md:flex-col">
           {/* Left Panel: Controls */}
@@ -83,7 +94,11 @@ export default function App() {
             style={{ borderRight: "1px solid var(--c-border)", borderColor: "var(--c-border)" }}
           >
             {/* Tab switcher */}
-            <div className="flex flex-wrap" style={{ borderBottom: "1px solid var(--c-border)" }}>
+            <div
+              data-tour="tab-switcher"
+              className="flex flex-wrap"
+              style={{ borderBottom: "1px solid var(--c-border)" }}
+            >
               {(["bow", "arrow", "tuning", "database", "profiles"] as Tab[]).map((t) => (
                 <button
                   key={t}
@@ -108,7 +123,7 @@ export default function App() {
               ))}
             </div>
 
-            <div className="p-5">
+            <div data-tour="control-panel" className="p-5">
               {tab === "bow" ? (
                 <ControlPanel />
               ) : tab === "arrow" ? (
@@ -125,9 +140,11 @@ export default function App() {
 
           {/* Right Panel: Visualizations */}
           <div className="flex-1 p-5 min-w-0 overflow-y-auto max-h-[calc(100vh-65px)]">
-            <StatsBar physics={physics} />
+            <div data-tour="stats-bar">
+              <StatsBar physics={physics} />
+            </div>
 
-            <div className="mb-4">
+            <div data-tour="string-viz" className="mb-4">
               <StringVisualizer physics={physics} />
             </div>
 
@@ -135,7 +152,7 @@ export default function App() {
               <CrossSectionView />
             </div>
 
-            <div className="flex gap-3 flex-wrap mb-4">
+            <div data-tour="force-energy" className="flex gap-3 flex-wrap mb-4">
               <div className="flex-1 min-w-70">
                 <span
                   className="text-[11px] font-mono tracking-[2px] uppercase"
@@ -161,7 +178,7 @@ export default function App() {
             </div>
 
             {/* Draw Cycle Animation */}
-            <div className="mb-4">
+            <div data-tour="draw-cycle" className="mb-4">
               <DrawCycleView />
             </div>
 
@@ -171,7 +188,7 @@ export default function App() {
             </div>
 
             {/* Sound & Vibration Analysis */}
-            <div className="mb-4">
+            <div data-tour="sound-analysis" className="mb-4">
               <SoundAnalysis physics={physics} />
             </div>
 
@@ -193,8 +210,19 @@ export default function App() {
             </div>
 
             {/* Share & Export */}
-            <div className="mb-4">
+            <div data-tour="share-export" className="mb-4">
               <ShareExport physics={physics} />
+            </div>
+
+            {/* Replay tour link */}
+            <div className="text-center py-4">
+              <button
+                onClick={handleReplayTour}
+                className="text-[9px] font-mono uppercase tracking-wider cursor-pointer transition-all"
+                style={{ color: "var(--c-text-faint)" }}
+              >
+                Replay Guided Tour
+              </button>
             </div>
           </div>
         </div>
