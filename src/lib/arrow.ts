@@ -140,7 +140,7 @@ export function computeDynamicSpine(
   staticSpine: number,
   shaftLength: number,
   pointWeight: number,
-  drawWeight: number,
+  _drawWeight: number,
   bowType: "compound" | "recurve" | "longbow" | "crossbow",
 ): number {
   // Start with static spine

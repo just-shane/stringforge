@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { APP_VERSION, APP_NAME, APP_SUBTITLE } from "../lib/version.ts";
 import { loadPersistedState, persistState, clearPersistedState, type PersistedState } from "../lib/persist.ts";
 import { THEMES, getThemeById } from "../lib/themes.ts";
