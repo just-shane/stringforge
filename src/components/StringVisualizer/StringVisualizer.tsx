@@ -22,6 +22,7 @@ export function StringVisualizer({ physics }: StringVisualizerProps) {
   const setAnimating = useSimStore((s) => s.setAnimating);
   const weights = useSimStore((s) => s.weights);
   const updateWeight = useSimStore((s) => s.updateWeight);
+  const theme = useSimStore((s) => s.theme);
   const animRef = useRef<number>(0);
 
   useEffect(() => {
@@ -77,6 +78,8 @@ export function StringVisualizer({ physics }: StringVisualizerProps) {
     setAnimating(!animating);
   }, [animating, setAnimating]);
 
+  const c = theme.colors;
+
   // Grid lines
   const gridLines = useMemo(
     () =>
@@ -89,28 +92,32 @@ export function StringVisualizer({ physics }: StringVisualizerProps) {
             y1={20}
             x2={x}
             y2={VB.h - 20}
-            stroke="#1a1a1a"
+            stroke={c.border}
             strokeWidth={0.5}
             strokeDasharray={i % 5 === 0 ? "none" : "2,4"}
           />
         );
       }),
-    [],
+    [c.border],
   );
 
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
-        <span className="text-lime text-[11px] font-mono tracking-[2px] uppercase">
+        <span
+          className="text-[11px] font-mono tracking-[2px] uppercase"
+          style={{ color: "var(--c-accent)" }}
+        >
           Side Profile
         </span>
         <button
           onClick={handleToggle}
-          className={`px-2.5 py-0.5 rounded text-[10px] font-mono cursor-pointer border transition-all ${
-            animating
-              ? "bg-lime-dim border-lime text-lime"
-              : "bg-white/5 border-neutral-600 text-neutral-400"
-          }`}
+          className="px-2.5 py-0.5 rounded text-[10px] font-mono cursor-pointer transition-all"
+          style={{
+            background: animating ? "var(--c-accent-dim)" : "var(--c-surface)",
+            border: `1px solid ${animating ? "var(--c-accent)" : "var(--c-border)"}`,
+            color: animating ? "var(--c-accent)" : "var(--c-text-muted)",
+          }}
         >
           {animating ? "■ STOP" : "▶ VIBRATE"}
         </button>
@@ -119,73 +126,47 @@ export function StringVisualizer({ physics }: StringVisualizerProps) {
       <svg
         ref={svgRef}
         viewBox={`0 0 ${VB.w} ${VB.h}`}
-        className="w-full bg-black/30 rounded-lg border border-neutral-800"
+        className="w-full rounded-lg"
+        style={{
+          background: "var(--c-surface)",
+          border: "1px solid var(--c-border-light)",
+        }}
       >
         {gridLines}
 
         {/* Cam wheels */}
         {[CAM_LX, CAM_RX].map((cx) => (
           <g key={cx}>
-            <circle cx={cx} cy={CAM_Y} r={CAM_R} fill="none" stroke="#333" strokeWidth={2} />
-            <circle
-              cx={cx}
-              cy={CAM_Y}
-              r={CAM_R - 3}
-              fill="none"
-              stroke="#2a2a2a"
-              strokeWidth={1}
-            />
-            <circle cx={cx} cy={CAM_Y} r={2} fill="#A0FF00" opacity={0.6} />
+            <circle cx={cx} cy={CAM_Y} r={CAM_R} fill="none" stroke={c.borderLight} strokeWidth={2} />
+            <circle cx={cx} cy={CAM_Y} r={CAM_R - 3} fill="none" stroke={c.border} strokeWidth={1} />
+            <circle cx={cx} cy={CAM_Y} r={2} fill={c.accent} opacity={0.6} />
           </g>
         ))}
 
         {/* Serving zones */}
         <line
-          x1={CAM_LX + CAM_R}
-          y1={CAM_Y}
-          x2={CAM_LX + CAM_R + 40}
-          y2={CAM_Y - 2}
-          stroke="#666"
-          strokeWidth={3}
-          strokeLinecap="round"
-          opacity={0.4}
+          x1={CAM_LX + CAM_R} y1={CAM_Y} x2={CAM_LX + CAM_R + 40} y2={CAM_Y - 2}
+          stroke={c.textDim} strokeWidth={3} strokeLinecap="round" opacity={0.4}
         />
         <line
-          x1={CAM_RX - CAM_R - 40}
-          y1={CAM_Y - 2}
-          x2={CAM_RX - CAM_R}
-          y2={CAM_Y}
-          stroke="#666"
-          strokeWidth={3}
-          strokeLinecap="round"
-          opacity={0.4}
+          x1={CAM_RX - CAM_R - 40} y1={CAM_Y - 2} x2={CAM_RX - CAM_R} y2={CAM_Y}
+          stroke={c.textDim} strokeWidth={3} strokeLinecap="round" opacity={0.4}
         />
 
         {/* Center serving */}
         <rect
-          x={VB.w / 2 - 30}
-          y={CAM_Y - 8}
-          width={60}
-          height={4}
-          rx={2}
-          fill="none"
-          stroke="#555"
-          strokeWidth={0.5}
-          strokeDasharray="2,2"
+          x={VB.w / 2 - 30} y={CAM_Y - 8} width={60} height={4} rx={2}
+          fill="none" stroke={c.textDim} strokeWidth={0.5} strokeDasharray="2,2"
         />
         <text
-          x={VB.w / 2}
-          y={CAM_Y - 12}
-          textAnchor="middle"
-          fill="#555"
-          fontSize="5"
-          fontFamily="monospace"
+          x={VB.w / 2} y={CAM_Y - 12} textAnchor="middle"
+          fill={c.textDim} fontSize="5" fontFamily="monospace"
         >
           CENTER SERVING
         </text>
 
         {/* String */}
-        <path d={pathD} fill="none" stroke="#D4D4D4" strokeWidth={1.2} />
+        <path d={pathD} fill="none" stroke={c.string} strokeWidth={1.2} />
 
         {/* Draggable weights */}
         {weights.map((w, i) => (
@@ -204,13 +185,8 @@ export function StringVisualizer({ physics }: StringVisualizerProps) {
           const x = MARGIN + (pct / 100) * USABLE;
           return (
             <text
-              key={pct}
-              x={x}
-              y={VB.h - 8}
-              textAnchor="middle"
-              fill="#444"
-              fontSize="6"
-              fontFamily="monospace"
+              key={pct} x={x} y={VB.h - 8} textAnchor="middle"
+              fill={c.textFaint} fontSize="6" fontFamily="monospace"
             >
               {pct}%
             </text>

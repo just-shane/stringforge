@@ -14,8 +14,10 @@ export function Slider({ label, value, min, max, step, unit, onChange }: SliderP
   return (
     <div className="mb-3">
       <div className="flex justify-between mb-0.5">
-        <span className="text-neutral-400 text-[11px]">{label}</span>
-        <span className="text-lime text-[11px] font-mono">
+        <span className="text-[11px]" style={{ color: "var(--c-text-muted)" }}>
+          {label}
+        </span>
+        <span className="text-[11px] font-mono" style={{ color: "var(--c-accent)" }}>
           {display}
           {unit}
         </span>

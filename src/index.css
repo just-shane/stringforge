@@ -8,19 +8,20 @@
   --color-tungsten: #7a8b99;
 }
 
-@font-face {
-  font-family: "Space Grotesk";
-  font-style: normal;
-  font-display: swap;
-  src: url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap");
-}
-
 body {
   font-family: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  background: var(--c-bg, #0c0e14);
+  color: var(--c-text, #c8cad0);
 }
 
-/* Range input styling */
+/* Range input styling — uses theme accent */
 input[type="range"] {
-  accent-color: var(--color-lime);
+  accent-color: var(--c-accent, #6b9eff);
   height: 4px;
+}
+
+/* Scrollbar theming */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-border-light, #252836) transparent;
 }

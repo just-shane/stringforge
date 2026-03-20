@@ -1,10 +1,30 @@
 import { create } from "zustand";
 import type { Weight, SimParams } from "./lib/physics.ts";
+import { getThemeById } from "./lib/themes.ts";
+import type { Theme } from "./lib/themes.ts";
+
+function loadThemeId(): string {
+  try {
+    return localStorage.getItem("bowstring-theme") ?? "midnight";
+  } catch {
+    return "midnight";
+  }
+}
+
+function saveThemeId(id: string) {
+  try {
+    localStorage.setItem("bowstring-theme", id);
+  } catch {
+    // localStorage unavailable
+  }
+}
 
 interface SimState {
   params: SimParams;
   weights: Weight[];
   animating: boolean;
+  theme: Theme;
+  menuOpen: boolean;
 
   setParam: <K extends keyof SimParams>(key: K, value: SimParams[K]) => void;
   setWeights: (weights: Weight[]) => void;
@@ -12,6 +32,8 @@ interface SimState {
   removeWeight: (index: number) => void;
   addWeight: (weight: Weight) => void;
   setAnimating: (animating: boolean) => void;
+  setTheme: (id: string) => void;
+  setMenuOpen: (open: boolean) => void;
 }
 
 export const useSimStore = create<SimState>((set) => ({
@@ -29,6 +51,8 @@ export const useSimStore = create<SimState>((set) => ({
   ],
 
   animating: true,
+  theme: getThemeById(loadThemeId()),
+  menuOpen: false,
 
   setParam: (key, value) =>
     set((state) => ({ params: { ...state.params, [key]: value } })),
@@ -52,4 +76,12 @@ export const useSimStore = create<SimState>((set) => ({
     }),
 
   setAnimating: (animating) => set({ animating }),
+
+  setTheme: (id) => {
+    const theme = getThemeById(id);
+    saveThemeId(id);
+    set({ theme });
+  },
+
+  setMenuOpen: (open) => set({ menuOpen: open }),
 }));

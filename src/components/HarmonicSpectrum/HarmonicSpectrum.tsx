@@ -1,3 +1,4 @@
+import { useSimStore } from "../../store.ts";
 import type { PhysicsResult } from "../../lib/physics.ts";
 
 const VB = { w: 300, h: 100 };
@@ -10,18 +11,21 @@ interface HarmonicSpectrumProps {
 }
 
 export function HarmonicSpectrum({ physics }: HarmonicSpectrumProps) {
+  const theme = useSimStore((s) => s.theme);
+  const c = theme.colors;
+
   return (
     <svg
       viewBox={`0 0 ${VB.w} ${VB.h}`}
-      className="w-full bg-black/30 rounded-lg border border-neutral-800"
+      className="w-full rounded-lg"
+      style={{
+        background: "var(--c-surface)",
+        border: "1px solid var(--c-border-light)",
+      }}
     >
       <text
-        x={VB.w / 2}
-        y={10}
-        textAnchor="middle"
-        fill="#555"
-        fontSize="6"
-        fontFamily="monospace"
+        x={VB.w / 2} y={10} textAnchor="middle"
+        fill={c.textDim} fontSize="6" fontFamily="monospace"
       >
         HARMONIC MODE AMPLITUDES
       </text>
@@ -36,32 +40,20 @@ export function HarmonicSpectrum({ physics }: HarmonicSpectrumProps) {
         return (
           <g key={i}>
             <rect
-              x={x}
-              y={y}
-              width={BAR_W}
-              height={barH}
-              rx={2}
+              x={x} y={y} width={BAR_W} height={barH} rx={2}
               fill={`hsla(${hue}, 70%, 50%, 0.7)`}
               stroke={`hsla(${hue}, 70%, 60%, 0.9)`}
               strokeWidth={0.5}
             />
             <text
-              x={x + BAR_W / 2}
-              y={VB.h - 4}
-              textAnchor="middle"
-              fill="#666"
-              fontSize="6"
-              fontFamily="monospace"
+              x={x + BAR_W / 2} y={VB.h - 4} textAnchor="middle"
+              fill={c.textDim} fontSize="6" fontFamily="monospace"
             >
               {h.mode}
             </text>
             <text
-              x={x + BAR_W / 2}
-              y={y - 3}
-              textAnchor="middle"
-              fill="#999"
-              fontSize="5"
-              fontFamily="monospace"
+              x={x + BAR_W / 2} y={y - 3} textAnchor="middle"
+              fill={c.textMuted} fontSize="5" fontFamily="monospace"
             >
               {(h.amplitude * 100).toFixed(0)}%
             </text>

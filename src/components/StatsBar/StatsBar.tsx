@@ -4,21 +4,38 @@ interface StatProps {
   label: string;
   value: string;
   unit: string;
-  color?: string;
+  colorVar?: string;
   sub?: string;
 }
 
-function Stat({ label, value, unit, color = "text-white", sub }: StatProps) {
+function Stat({ label, value, unit, colorVar = "var(--c-text)", sub }: StatProps) {
   return (
-    <div className="bg-black/30 rounded-md px-3 py-2 border border-neutral-800 flex-1 min-w-30">
-      <div className="text-neutral-500 text-[9px] uppercase tracking-[1.5px] font-mono mb-0.5">
+    <div
+      className="rounded-md px-3 py-2 flex-1 min-w-30"
+      style={{
+        background: "var(--c-surface)",
+        border: "1px solid var(--c-border)",
+      }}
+    >
+      <div
+        className="text-[9px] uppercase tracking-[1.5px] font-mono mb-0.5"
+        style={{ color: "var(--c-text-dim)" }}
+      >
         {label}
       </div>
       <div className="flex items-baseline gap-0.5">
-        <span className={`${color} text-xl font-bold`}>{value}</span>
-        <span className="text-neutral-500 text-[10px] font-mono">{unit}</span>
+        <span className="text-xl font-bold" style={{ color: colorVar }}>
+          {value}
+        </span>
+        <span className="text-[10px] font-mono" style={{ color: "var(--c-text-dim)" }}>
+          {unit}
+        </span>
       </div>
-      {sub && <div className="text-neutral-500 text-[9px] font-mono mt-0.5">{sub}</div>}
+      {sub && (
+        <div className="text-[9px] font-mono mt-0.5" style={{ color: "var(--c-text-dim)" }}>
+          {sub}
+        </div>
+      )}
     </div>
   );
 }
@@ -34,7 +51,7 @@ export function StatsBar({ physics }: StatsBarProps) {
         label="Fundamental"
         value={physics.fundamentalFreq.toFixed(1)}
         unit="Hz"
-        color="text-lime"
+        colorVar="var(--c-accent)"
       />
       <Stat
         label="Total Mass"
@@ -46,19 +63,21 @@ export function StatsBar({ physics }: StatsBarProps) {
         label="Speed Loss"
         value={`-${physics.speedPenalty.toFixed(1)}`}
         unit="fps"
-        color={physics.speedPenalty > 5 ? "text-red-400" : "text-amber-300"}
+        colorVar={physics.speedPenalty > 5 ? "var(--c-danger)" : "var(--c-warn)"}
       />
       <Stat
         label="Vibe Reduction"
         value={physics.vibrationReduction.toFixed(0)}
         unit="%"
-        color={physics.vibrationReduction > 50 ? "text-lime" : "text-amber-300"}
+        colorVar={physics.vibrationReduction > 50 ? "var(--c-accent)" : "var(--c-warn)"}
       />
       <Stat
         label="Balance"
         value={physics.balancePoint.toFixed(1)}
         unit="%"
-        color={Math.abs(physics.balancePoint - 50) < 3 ? "text-lime" : "text-amber-300"}
+        colorVar={
+          Math.abs(physics.balancePoint - 50) < 3 ? "var(--c-accent)" : "var(--c-warn)"
+        }
         sub={
           Math.abs(physics.balancePoint - 50) < 3
             ? "CENTERED"

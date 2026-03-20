@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, type RefObject } from "react";
+import { useSimStore } from "../../store.ts";
 import type { Weight } from "../../lib/physics.ts";
 
 const VB_W = 600;
@@ -25,6 +26,7 @@ interface DraggableWeightProps {
 
 export function DraggableWeight({ weight, index, onUpdate, svgRef, viewBox }: DraggableWeightProps) {
   const [dragging, setDragging] = useState(false);
+  const theme = useSimStore((s) => s.theme);
 
   const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
@@ -62,7 +64,7 @@ export function DraggableWeight({ weight, index, onUpdate, svgRef, viewBox }: Dr
   }, [dragging, handleMove]);
 
   const pos = getPositionOnString(weight.position);
-  const fill = weight.type === "brass" ? "#C5943A" : "#7A8B99";
+  const fill = weight.type === "brass" ? theme.colors.brass : theme.colors.tungsten;
 
   return (
     <g
@@ -71,32 +73,18 @@ export function DraggableWeight({ weight, index, onUpdate, svgRef, viewBox }: Dr
       style={{ cursor: dragging ? "grabbing" : "grab" }}
     >
       <rect
-        x={pos.x - 6}
-        y={pos.y - 4}
-        width={12}
-        height={8}
-        rx={1.5}
+        x={pos.x - 6} y={pos.y - 4} width={12} height={8} rx={1.5}
         fill={fill}
-        stroke={dragging ? "#A0FF00" : "#fff"}
+        stroke={dragging ? theme.colors.accent : theme.colors.text}
         strokeWidth={dragging ? 1.5 : 0.8}
       />
       <rect
-        x={pos.x - 5}
-        y={pos.y - 3}
-        width={10}
-        height={6}
-        rx={1}
-        fill="none"
-        stroke="rgba(255,255,255,0.3)"
-        strokeWidth={0.3}
+        x={pos.x - 5} y={pos.y - 3} width={10} height={6} rx={1}
+        fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth={0.3}
       />
       <text
-        x={pos.x}
-        y={pos.y + 16}
-        textAnchor="middle"
-        fill="#9CA3AF"
-        fontSize="6"
-        fontFamily="monospace"
+        x={pos.x} y={pos.y + 16} textAnchor="middle"
+        fill={theme.colors.textMuted} fontSize="6" fontFamily="monospace"
       >
         {weight.mass}gr @ {weight.position.toFixed(1)}%
       </text>
