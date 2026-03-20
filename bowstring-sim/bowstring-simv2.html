@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G5 Bowstring Dynamics — Speed Weight Simulator</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg: #0a0a0a; --panel: #111; --border: #1a1a1a; --border2: #222;
+    --lime: #A0FF00; --lime-dim: rgba(160,255,0,0.15); --lime-glow: rgba(160,255,0,0.05);
+    --brass: #C5943A; --tungsten: #7A8B99;
+    --txt: #e0e0e0; --txt2: #999; --txt3: #666; --txt4: #444; --txt5: #555;
+    --mono: 'JetBrains Mono', monospace; --sans: 'Space Grotesk', 'Segoe UI', sans-serif;
+    --red: #ff6b6b; --yellow: #ffd93d;
+  }
+  html, body { height:100%; background:var(--bg); color:var(--txt); font-family:var(--sans); overflow:hidden; }
+
+  /* ── Header ─────────────────────────────────── */
+  #header {
+    display:flex; align-items:center; justify-content:space-between;
+    border-bottom:1px solid var(--border); padding:14px 24px; height:64px;
+  }
+  #header .left { display:flex; align-items:center; gap:12px; }
+  #header .logo {
+    width:34px; height:34px; border-radius:7px;
+    background:linear-gradient(135deg, var(--lime), #6BBF00);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:15px; color:#000;
+  }
+  #header .title { font-size:16px; font-weight:700; letter-spacing:-0.5px; }
+  #header .sub { font-size:10px; color:var(--txt3); font-family:var(--mono); }
+  #header .right { font-size:9px; color:var(--txt4); font-family:var(--mono); text-align:right; line-height:1.5; }
+
+  /* ── Layout ─────────────────────────────────── */
+  #app { display:flex; height:calc(100vh - 64px); }
+  #controls {
+    width:290px; min-width:290px; border-right:1px solid var(--border);
+    padding:20px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:#222 transparent;
+  }
+  #main { flex:1; padding:20px; overflow-y:auto; min-width:0; scrollbar-width:thin; scrollbar-color:#222 transparent; }
+
+  /* ── Section Labels ─────────────────────────── */
+  .section-label {
+    color:var(--lime); font-size:10px; letter-spacing:2px; font-family:var(--mono);
+    text-transform:uppercase; margin-bottom:14px;
+  }
+  .view-label {
+    color:var(--lime); font-size:11px; letter-spacing:2px; font-family:var(--mono);
+    text-transform:uppercase; margin-bottom:8px;
+  }
+
+  /* ── Slider ─────────────────────────────────── */
+  .slider-wrap { margin-bottom:13px; }
+  .slider-row { display:flex; justify-content:space-between; margin-bottom:3px; }
+  .slider-row .lbl { color:var(--txt2); font-size:11px; }
+  .slider-row .val { color:var(--lime); font-size:11px; font-family:var(--mono); }
+  input[type=range] { width:100%; accent-color:var(--lime); height:4px; cursor:pointer; }
+
+  /* ── Material Buttons ───────────────────────── */
+  .mat-row { display:flex; gap:4px; flex-wrap:wrap; margin-top:4px; margin-bottom:14px; }
+  .mat-btn {
+    padding:4px 10px; border-radius:4px; cursor:pointer; font-size:10px;
+    font-family:var(--mono); background:rgba(255,255,255,0.03); border:1px solid #333; color:#888;
+    transition: all .15s;
+  }
+  .mat-btn.active { background:var(--lime-dim); border-color:var(--lime); color:var(--lime); }
+
+  /* ── Weight Cards ───────────────────────────── */
+  .weight-card {
+    background:rgba(255,255,255,0.02); border-radius:6px; padding:10px;
+    margin-bottom:6px; border:1px solid var(--border);
+  }
+  .wc-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .wc-label { font-size:10px; font-family:var(--mono); }
+  .wc-remove {
+    background:none; border:none; color:var(--txt5); cursor:pointer;
+    font-size:16px; line-height:1; padding:0;
+  }
+  .wc-remove:hover { color:var(--red); }
+  .type-row { display:flex; gap:4px; }
+  .type-btn {
+    flex:1; padding:3px 0; border-radius:3px; cursor:pointer; font-size:9px;
+    font-family:var(--mono); background:transparent; border:1px solid #333; color:var(--txt5);
+    transition: all .15s;
+  }
+
+  /* ── Add Weight ─────────────────────────────── */
+  #addBtn {
+    width:100%; padding:8px 0; border-radius:6px; background:var(--lime-glow);
+    border:1px dashed #333; color:var(--lime); cursor:pointer; font-size:11px;
+    font-family:var(--mono); transition:all .15s;
+  }
+  #addBtn:hover { border-color:var(--lime); background:var(--lime-dim); }
+
+  /* ── Stats Row ──────────────────────────────── */
+  #stats { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+  .stat-box {
+    background:rgba(0,0,0,0.3); border-radius:6px; padding:8px 12px;
+    border:1px solid var(--border); flex:1; min-width:130px;
+  }
+  .stat-box .s-label {
+    color:var(--txt3); font-size:9px; text-transform:uppercase; letter-spacing:1.5px;
+    font-family:var(--mono); margin-bottom:2px;
+  }
+  .stat-box .s-val { display:flex; align-items:baseline; gap:3px; }
+  .stat-box .s-num { font-size:20px; font-weight:700; }
+  .stat-box .s-unit { color:var(--txt3); font-size:10px; font-family:var(--mono); }
+  .stat-box .s-sub { color:var(--txt5); font-size:9px; font-family:var(--mono); margin-top:2px; }
+
+  /* ── SVG Containers ─────────────────────────── */
+  .svg-wrap {
+    background:rgba(0,0,0,0.3); border-radius:8px; border:1px solid var(--border2);
+    overflow:hidden;
+  }
+  .svg-wrap svg { display:block; width:100%; }
+
+  /* ── View Header Row ────────────────────────── */
+  .view-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  #vibrateBtn {
+    padding:3px 10px; border-radius:4px; cursor:pointer; font-size:10px;
+    font-family:var(--mono); border:1px solid var(--lime); background:var(--lime-dim); color:var(--lime);
+    transition: all .15s;
+  }
+  #vibrateBtn.off { border-color:#444; background:rgba(255,255,255,0.05); color:#888; }
+
+  /* ── Bottom Row ─────────────────────────────── */
+  #bottom { display:flex; gap:12px; flex-wrap:wrap; margin-top:16px; }
+  #bottom > div { flex:1; min-width:280px; }
+
+  .guide-box {
+    background:rgba(0,0,0,0.3); border-radius:8px; border:1px solid var(--border2);
+    padding:12px; font-size:11px; color:#888; line-height:1.7; font-family:var(--mono); margin-top:8px;
+  }
+  .guide-box .g-lime { color:var(--lime); }
+  .guide-box .g-yel  { color:var(--yellow); }
+  .guide-box .g-tun  { color:var(--tungsten); }
+  .guide-box .sep {
+    margin-top:8px; color:var(--txt5); border-top:1px solid var(--border); padding-top:8px;
+  }
+
+  .divider { border-top:1px solid var(--border); padding-top:16px; margin-top:16px; }
+
+  @media (max-width:760px) {
+    #app { flex-direction:column; }
+    #controls { width:100%; min-width:0; max-height:40vh; border-right:none; border-bottom:1px solid var(--border); }
+    #main { max-height:none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ Header ═══════════════════════════════════════════════ -->
+<div id="header">
+  <div class="left">
+    <div class="logo">G5</div>
+    <div><div class="title">Bowstring Dynamics</div><div class="sub">SPEED WEIGHT SIMULATOR v1.0</div></div>
+  </div>
+  <div class="right">PRIME ARCHERY DIV<br>GRACE ENGINEERING</div>
+</div>
+
+<div id="app">
+<!-- ═══ Controls ═════════════════════════════════════════════ -->
+<div id="controls">
+  <div class="section-label">String Parameters</div>
+
+  <div class="slider-wrap">
+    <div class="slider-row"><span class="lbl">String Length</span><span class="val" id="vLen">57.5"</span></div>
+    <input type="range" id="sLen" min="48" max="65" step="0.25" value="57.5">
+  </div>
+  <div class="slider-wrap">
+    <div class="slider-row"><span class="lbl">Brace Height</span><span class="val" id="vBrace">7.0"</span></div>
+    <input type="range" id="sBrace" min="5" max="9" step="0.125" value="7">
+  </div>
+  <div class="slider-wrap">
+    <div class="slider-row"><span class="lbl">Strand Count</span><span class="val" id="vStrand">24 strands</span></div>
+    <input type="range" id="sStrand" min="16" max="32" step="2" value="24">
+  </div>
+  <div class="slider-wrap">
+    <div class="slider-row"><span class="lbl">Tension (at rest)</span><span class="val" id="vTension">350 lbs</span></div>
+    <input type="range" id="sTension" min="100" max="600" step="10" value="350">
+  </div>
+  <div class="slider-wrap">
+    <div class="slider-row"><span class="lbl">Cam Diameter</span><span class="val" id="vCam">3.5"</span></div>
+    <input type="range" id="sCam" min="2.0" max="5.5" step="0.125" value="3.5">
+  </div>
+
+  <div style="margin-bottom:14px">
+    <div style="color:var(--txt2);font-size:11px;margin-bottom:4px">String Material</div>
+    <div class="mat-row" id="matRow"></div>
+  </div>
+
+  <div class="divider">
+    <div class="section-label" id="weightLabel">SPEED WEIGHTS (2/8)</div>
+    <div id="weightList"></div>
+    <button id="addBtn">+ ADD WEIGHT</button>
+  </div>
+</div>
+
+<!-- ═══ Main View ════════════════════════════════════════════ -->
+<div id="main">
+  <div id="stats"></div>
+
+  <!-- Side View -->
+  <div style="margin-bottom:16px">
+    <div class="view-header">
+      <span class="view-label">Side Profile</span>
+      <button id="vibrateBtn">■ STOP</button>
+    </div>
+    <div class="svg-wrap"><svg id="svgSide" viewBox="0 0 600 200"></svg></div>
+  </div>
+
+  <!-- Top Down -->
+  <div style="margin-bottom:16px">
+    <div class="view-label">Top-Down Cross Section</div>
+    <div class="svg-wrap" style="margin-top:8px"><svg id="svgTop" viewBox="0 0 600 120"></svg></div>
+  </div>
+
+  <!-- Harmonics + Guide -->
+  <div id="bottom">
+    <div>
+      <span class="view-label">Harmonic Spectrum</span>
+      <div class="svg-wrap" style="margin-top:8px"><svg id="svgHarm" viewBox="0 0 300 100"></svg></div>
+    </div>
+    <div>
+      <span class="view-label">Placement Guide</span>
+      <div class="guide-box">
+        <div><span class="g-lime">25%/75%</span> — Standard dampening, targets 2nd harmonic</div>
+        <div><span class="g-lime">33%/67%</span> — Targets 3rd harmonic, less speed loss</div>
+        <div><span class="g-lime">50%</span> — Max fundamental dampening, center mass</div>
+        <div><span class="g-yel">Brass</span> — 8.5 g/cc, affordable, easier to tune</div>
+        <div><span class="g-tun">Tungsten</span> — 19.3 g/cc, compact, less wind drag</div>
+        <div class="sep">Drag weights on the side view to reposition.<br>~1.8 fps loss per 10 grains added.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  PHYSICS ENGINE
+// ═══════════════════════════════════════════════════════════════
+const GRAIN_TO_KG = 0.0000648, INCH_TO_M = 0.0254;
+const MATERIALS = {
+  "BCY-X": { density:0.0052, modulus:7.5, stretchPct:0.5 },
+  "452X":  { density:0.0048, modulus:7.2, stretchPct:0.8 },
+  "8190":  { density:0.0044, modulus:6.8, stretchPct:1.0 },
+  "D97":   { density:0.0046, modulus:6.5, stretchPct:1.2 },
+};
+
+function computePhysics(p) {
+  const mat = MATERIALS[p.material];
+  const L = p.stringLength * INCH_TO_M;
+  // Cam wrap eats string — approximate wrap arc reduces free vibrating length
+  const camWrap = (p.camDiameter || 3.5) * INCH_TO_M * Math.PI * 0.35; // ~35% wrap per cam
+  const freeLen = Math.max(0.1, L - 2 * camWrap);
+  const vibLen = Math.sqrt(Math.max(0.01, (freeLen/2)**2 - (p.braceHeight*INCH_TO_M)**2)) * 2;
+  const muStr = mat.density * p.strandCount / 1000;
+  const mStr = muStr * L;
+  const mWt = p.weights.reduce((s,w) => s + w.mass * GRAIN_TO_KG, 0);
+  const mu = (mStr + mWt) / L;
+  const T = p.tension * 4.44822;
+  const f0 = (1/(2*vibLen)) * Math.sqrt(T/mu);
+
+  const harmonics = [];
+  for (let n=1; n<=8; n++) {
+    let amp = 1/n;
+    p.weights.forEach(w => {
+      const pos = w.position/100;
+      const node = Math.abs(Math.sin(n*Math.PI*pos));
+      const damp = 1 - (w.mass*GRAIN_TO_KG/(mStr+mWt))*node*3;
+      amp *= Math.max(0.01, damp);
+    });
+    harmonics.push({ mode:n, freq:f0*n, amplitude:amp, damping:1-amp });
+  }
+
+  const bal = p.weights.length>0
+    ? p.weights.reduce((s,w)=>s+w.position*w.mass,0) / Math.max(1, p.weights.reduce((s,w)=>s+w.mass,0))
+    : 50;
+  const mStrGr = mStr/GRAIN_TO_KG, mWtGr = mWt/GRAIN_TO_KG;
+  const speedPen = mWtGr * (1.8/10);
+  let vibRed = p.weights.reduce((s,w) => {
+    return s + (w.mass/50)*Math.sin(Math.PI*w.position/100)*25;
+  }, 0);
+  vibRed = Math.min(95, vibRed);
+
+  return { f0, harmonics, bal, totalGr:mStrGr+mWtGr, mStrGr, mWtGr, speedPen, vibRed, vibLen:vibLen/INCH_TO_M, mu, camWrapIn:camWrap/INCH_TO_M };
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════
+const state = {
+  stringLength:57.5, strandCount:24, material:"BCY-X", tension:350, braceHeight:7.0, camDiameter:3.5,
+  weights: [
+    { position:25, mass:15, type:"brass" },
+    { position:75, mass:15, type:"brass" },
+  ],
+  animating: true, time: 0,
+};
+let physics = null;
+let animFrame = null;
+let dragging = null; // { index, svgEl }
+
+function recalc() { physics = computePhysics(state); }
+recalc();
+
+// ═══════════════════════════════════════════════════════════════
+//  SVG HELPER
+// ═══════════════════════════════════════════════════════════════
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const [k,v] of Object.entries(attrs||{})) {
+    if (k === "textContent") e.textContent = v;
+    else e.setAttribute(k, v);
+  }
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function clearSVG(id) { const s=document.getElementById(id); while(s.firstChild) s.removeChild(s.firstChild); return s; }
+
+// ═══════════════════════════════════════════════════════════════
+//  RENDER: STATS
+// ═══════════════════════════════════════════════════════════════
+function renderStats() {
+  const p = physics;
+  const box = document.getElementById("stats");
+  const items = [
+    { label:"Fundamental", val:p.f0.toFixed(1), unit:"Hz", color:"var(--lime)" },
+    { label:"Total Mass", val:p.totalGr.toFixed(1), unit:"gr", color:"#fff",
+      sub:`String: ${p.mStrGr.toFixed(1)} + Weights: ${p.mWtGr.toFixed(1)}` },
+    { label:"Speed Loss", val:`-${p.speedPen.toFixed(1)}`, unit:"fps",
+      color: p.speedPen>5?"var(--red)":"var(--yellow)" },
+    { label:"Vibe Reduction", val:p.vibRed.toFixed(0), unit:"%",
+      color: p.vibRed>50?"var(--lime)":"var(--yellow)" },
+    { label:"Balance", val:p.bal.toFixed(1), unit:"%",
+      color: Math.abs(p.bal-50)<3?"var(--lime)":"var(--yellow)",
+      sub: Math.abs(p.bal-50)<3?"CENTERED":p.bal<50?"CAM-BIASED":"NOCK-BIASED" },
+    { label:"Vib Length", val:p.vibLen.toFixed(1), unit:'"',
+      color:"#fff", sub:`Cam wrap: ${(p.camWrapIn*2).toFixed(1)}" total` },
+  ];
+  box.innerHTML = items.map(i => `
+    <div class="stat-box">
+      <div class="s-label">${i.label}</div>
+      <div class="s-val"><span class="s-num" style="color:${i.color}">${i.val}</span><span class="s-unit">${i.unit}</span></div>
+      ${i.sub ? `<div class="s-sub">${i.sub}</div>` : ""}
+    </div>`).join("");
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  RENDER: SIDE VIEW
+// ═══════════════════════════════════════════════════════════════
+const SVB = { w:600, h:200 };
+const MARGIN = SVB.w*0.08, USABLE = SVB.w - 2*MARGIN;
+const CAM_LX = MARGIN, CAM_RX = SVB.w - MARGIN, CAM_Y = SVB.h*0.5;
+// Cam radius in SVG units — scales from ~8px at 2" to ~22px at 5.5"
+function camR() { return 4 + state.camDiameter * 3.4; }
+
+function posOnString(pct) {
+  const x = MARGIN + (pct/100)*USABLE;
+  const mid = SVB.w/2, sag = SVB.h*0.06;
+  const n = (x-mid)/(USABLE/2);
+  return { x, y: SVB.h*0.5 - sag*(1-n*n) };
+}
+
+let sideStatic = null; // group for static elements
+let sidePath = null;   // the string path
+let sideWeightGroups = [];
+
+function buildSideStatic() {
+  const svg = clearSVG("svgSide");
+
+  // Grid lines
+  for (let i=0; i<=10; i++) {
+    const x = MARGIN + (i/10)*USABLE;
+    el("line", { x1:x, y1:20, x2:x, y2:SVB.h-20,
+      stroke:"#1a1a1a", "stroke-width":0.5,
+      "stroke-dasharray": i%5===0?"none":"2,4" }, svg);
+  }
+
+  // Cams
+  const cr = camR();
+  [[CAM_LX,CAM_Y],[CAM_RX,CAM_Y]].forEach(([cx,cy]) => {
+    el("circle", { cx, cy, r:cr, fill:"none", stroke:"#333", "stroke-width":2 }, svg);
+    el("circle", { cx, cy, r:Math.max(1,cr-3), fill:"none", stroke:"#2a2a2a", "stroke-width":1 }, svg);
+    el("circle", { cx, cy, r:2, fill:"var(--lime)", opacity:0.6 }, svg);
+    // Cam spokes
+    for (let a=0; a<360; a+=45) {
+      const rad = a*Math.PI/180;
+      el("line", { x1:cx+3*Math.cos(rad), y1:cy+3*Math.sin(rad),
+        x2:cx+(cr-1)*Math.cos(rad), y2:cy+(cr-1)*Math.sin(rad),
+        stroke:"#222", "stroke-width":0.4 }, svg);
+    }
+  });
+
+  // Cam diameter label
+  el("text", { x:CAM_LX, y:CAM_Y+cr+12, "text-anchor":"middle",
+    fill:"#444", "font-size":5, "font-family":"var(--mono)",
+    textContent:`⌀${state.camDiameter.toFixed(1)}"` }, svg);
+  el("text", { x:CAM_RX, y:CAM_Y+cr+12, "text-anchor":"middle",
+    fill:"#444", "font-size":5, "font-family":"var(--mono)",
+    textContent:`⌀${state.camDiameter.toFixed(1)}"` }, svg);
+
+  // Serving zones
+  el("line", { x1:CAM_LX+cr, y1:CAM_Y, x2:CAM_LX+cr+40, y2:CAM_Y-2,
+    stroke:"#666", "stroke-width":3, "stroke-linecap":"round", opacity:0.4 }, svg);
+  el("line", { x1:CAM_RX-cr-40, y1:CAM_Y-2, x2:CAM_RX-cr, y2:CAM_Y,
+    stroke:"#666", "stroke-width":3, "stroke-linecap":"round", opacity:0.4 }, svg);
+
+  // Center serving
+  el("rect", { x:SVB.w/2-30, y:CAM_Y-8, width:60, height:4, rx:2,
+    fill:"none", stroke:"#555", "stroke-width":0.5, "stroke-dasharray":"2,2" }, svg);
+  el("text", { x:SVB.w/2, y:CAM_Y-12, "text-anchor":"middle",
+    fill:"#555", "font-size":5, "font-family":"var(--mono)", textContent:"CENTER SERVING" }, svg);
+
+  // String path element
+  sidePath = el("path", { fill:"none", stroke:"#D4D4D4", "stroke-width":1.2 }, svg);
+
+  // Weight group container
+  sideStatic = el("g", {}, svg);
+
+  // Scale markers
+  [0,25,50,75,100].forEach(pct => {
+    const x = MARGIN + (pct/100)*USABLE;
+    el("text", { x, y:SVB.h-8, "text-anchor":"middle",
+      fill:"#444", "font-size":6, "font-family":"var(--mono)", textContent:pct+"%" }, svg);
+  });
+}
+
+function buildStringPath() {
+  const pts = [];
+  const midY = SVB.h*0.5, maxSag = SVB.h*0.06;
+  for (let i=0; i<=200; i++) {
+    const f = i/200;
+    const x = MARGIN + f*USABLE;
+    const sag = -maxSag*(1-(2*f-1)**2);
+    let vib = 0;
+    if (state.animating) {
+      physics.harmonics.forEach(h => {
+        const a = h.amplitude*4*Math.exp(-h.damping*0.3);
+        vib += a * Math.sin(h.mode*Math.PI*f) *
+          Math.sin(2*Math.PI*h.freq*state.time*0.01) *
+          Math.exp(-state.time*0.005*h.mode);
+      });
+    }
+    pts.push(`${i===0?"M":"L"}${x.toFixed(1)},${(midY+sag+vib).toFixed(1)}`);
+  }
+  sidePath.setAttribute("d", pts.join(" "));
+}
+
+function buildSideWeights() {
+  while (sideStatic.firstChild) sideStatic.removeChild(sideStatic.firstChild);
+  sideWeightGroups = [];
+
+  state.weights.forEach((w, i) => {
+    const g = el("g", { style:"cursor:grab" }, sideStatic);
+    const pos = posOnString(w.position);
+    const fill = w.type==="brass" ? "var(--brass)" : "var(--tungsten)";
+
+    el("rect", { x:pos.x-6, y:pos.y-4, width:12, height:8, rx:1.5,
+      fill, stroke:"#fff", "stroke-width":0.8 }, g);
+    el("rect", { x:pos.x-5, y:pos.y-3, width:10, height:6, rx:1,
+      fill:"none", stroke:"rgba(255,255,255,0.3)", "stroke-width":0.3 }, g);
+    const label = el("text", { x:pos.x, y:pos.y+16, "text-anchor":"middle",
+      fill:"#9CA3AF", "font-size":6, "font-family":"var(--mono)",
+      textContent:`${w.mass}gr @ ${w.position.toFixed(1)}%` }, g);
+
+    g.addEventListener("mousedown", e => { e.preventDefault(); startDrag(i, g); });
+    g.addEventListener("touchstart", e => { e.preventDefault(); startDrag(i, g); }, {passive:false});
+    sideWeightGroups.push({ g, pos, label });
+  });
+}
+
+function updateSideWeightPositions() {
+  state.weights.forEach((w, i) => {
+    if (!sideWeightGroups[i]) return;
+    const pos = posOnString(w.position);
+    const g = sideWeightGroups[i].g;
+    const rects = g.querySelectorAll("rect");
+    if (rects[0]) { rects[0].setAttribute("x",pos.x-6); rects[0].setAttribute("y",pos.y-4); }
+    if (rects[1]) { rects[1].setAttribute("x",pos.x-5); rects[1].setAttribute("y",pos.y-3); }
+    const txt = g.querySelector("text");
+    if (txt) { txt.setAttribute("x",pos.x); txt.setAttribute("y",pos.y+16);
+      txt.textContent = `${w.mass}gr @ ${w.position.toFixed(1)}%`; }
+  });
+}
+
+// ── Drag Logic ───────────────────────────────────
+function startDrag(idx, gEl) {
+  dragging = { index:idx };
+  gEl.style.cursor = "grabbing";
+  const rects = gEl.querySelectorAll("rect");
+  if (rects[0]) { rects[0].setAttribute("stroke","var(--lime)"); rects[0].setAttribute("stroke-width","1.5"); }
+}
+
+document.addEventListener("mousemove", onDragMove);
+document.addEventListener("mouseup", onDragEnd);
+document.addEventListener("touchmove", onDragMove, {passive:false});
+document.addEventListener("touchend", onDragEnd);
+
+function onDragMove(e) {
+  if (!dragging) return;
+  e.preventDefault();
+  const svg = document.getElementById("svgSide");
+  const rect = svg.getBoundingClientRect();
+  const cx = e.touches ? e.touches[0].clientX : e.clientX;
+  const svgX = ((cx - rect.left) / rect.width) * SVB.w;
+  let pct = ((svgX - MARGIN) / USABLE) * 100;
+  pct = Math.max(5, Math.min(95, pct));
+  state.weights[dragging.index].position = Math.round(pct*10)/10;
+  recalc();
+  updateSideWeightPositions();
+  renderStats();
+  renderHarmonics();
+}
+
+function onDragEnd() {
+  if (!dragging) return;
+  const g = sideWeightGroups[dragging.index];
+  if (g) {
+    g.g.style.cursor = "grab";
+    const r = g.g.querySelectorAll("rect");
+    if (r[0]) { r[0].setAttribute("stroke","#fff"); r[0].setAttribute("stroke-width","0.8"); }
+  }
+  dragging = null;
+  recalc();
+  renderAll();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  RENDER: TOP-DOWN VIEW
+// ═══════════════════════════════════════════════════════════════
+function renderTopDown() {
+  const svg = clearSVG("svgTop");
+  const VB = {w:600,h:120};
+  const sc = state.strandCount, maxStrands = Math.min(sc, 28);
+  const spread = Math.min(30, sc*0.8);
+
+  for (let si=0; si<maxStrands; si++) {
+    const off = ((si/(maxStrands-1))-0.5)*spread;
+    const midY = VB.h/2 + off;
+    let d = `M ${MARGIN},${VB.h/2}`;
+    const wps = state.weights.map(w => ({ x:MARGIN+(w.position/100)*USABLE, sq:Math.min(0.3,w.mass/80) }));
+    for (let x=MARGIN; x<=MARGIN+USABLE; x+=2) {
+      let y = midY;
+      wps.forEach(wp => {
+        const dist = Math.abs(x-wp.x);
+        if (dist<20) y = VB.h/2 + (y-VB.h/2)*(1-wp.sq*Math.exp(-(dist*dist)/100));
+      });
+      const fl = (x-MARGIN)/USABLE;
+      const es = Math.min(fl*8, (1-fl)*8, 1);
+      y = VB.h/2 + (y-VB.h/2)*es;
+      d += ` L${x.toFixed(0)},${y.toFixed(1)}`;
+    }
+    d += ` L${MARGIN+USABLE},${VB.h/2}`;
+    el("path", { d, fill:"none", stroke:"#888", "stroke-width":0.5, opacity:0.6 }, svg);
+  }
+
+  state.weights.forEach(w => {
+    const x = MARGIN+(w.position/100)*USABLE;
+    const hw = 5+w.mass/10;
+    const col = w.type==="brass"?"var(--brass)":"var(--tungsten)";
+    el("rect", { x:x-hw, y:VB.h/2-8, width:hw*2, height:16, rx:2,
+      fill: w.type==="brass"?"rgba(197,148,58,0.3)":"rgba(122,139,153,0.3)",
+      stroke:col, "stroke-width":0.8 }, svg);
+    el("line", { x1:x, y1:VB.h/2-10, x2:x, y2:VB.h/2+10,
+      stroke:col, "stroke-width":0.3, "stroke-dasharray":"1,1" }, svg);
+  });
+
+  el("circle", { cx:MARGIN, cy:VB.h/2, r:4, fill:"none", stroke:"#333", "stroke-width":1.5 }, svg);
+  el("circle", { cx:MARGIN+USABLE, cy:VB.h/2, r:4, fill:"none", stroke:"#333", "stroke-width":1.5 }, svg);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  RENDER: HARMONICS
+// ═══════════════════════════════════════════════════════════════
+function renderHarmonics() {
+  const svg = clearSVG("svgHarm");
+  const barW=28, gap=6, startX=20, VH=100;
+
+  el("text", { x:150, y:10, "text-anchor":"middle",
+    fill:"#555", "font-size":6, "font-family":"var(--mono)", textContent:"HARMONIC MODE AMPLITUDES" }, svg);
+
+  physics.harmonics.forEach((h,i) => {
+    const x = startX + i*(barW+gap);
+    const maxH = VH-30;
+    const bH = h.amplitude*maxH;
+    const y = VH-15-bH;
+    const hue = 80+h.damping*280;
+    el("rect", { x, y, width:barW, height:bH, rx:2,
+      fill:`hsla(${hue},70%,50%,0.7)`, stroke:`hsla(${hue},70%,60%,0.9)`, "stroke-width":0.5 }, svg);
+    el("text", { x:x+barW/2, y:VH-4, "text-anchor":"middle",
+      fill:"#666", "font-size":6, "font-family":"var(--mono)", textContent:h.mode }, svg);
+    el("text", { x:x+barW/2, y:y-3, "text-anchor":"middle",
+      fill:"#999", "font-size":5, "font-family":"var(--mono)",
+      textContent:(h.amplitude*100).toFixed(0)+"%" }, svg);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CONTROLS UI
+// ═══════════════════════════════════════════════════════════════
+function buildMaterialButtons() {
+  const row = document.getElementById("matRow");
+  row.innerHTML = "";
+  Object.keys(MATERIALS).forEach(m => {
+    const btn = document.createElement("button");
+    btn.className = "mat-btn" + (state.material===m?" active":"");
+    btn.textContent = m;
+    btn.onclick = () => { state.material=m; recalc(); buildMaterialButtons(); renderAll(); };
+    row.appendChild(btn);
+  });
+}
+
+function buildWeightList() {
+  const list = document.getElementById("weightList");
+  list.innerHTML = "";
+  document.getElementById("weightLabel").textContent = `SPEED WEIGHTS (${state.weights.length}/8)`;
+
+  state.weights.forEach((w,i) => {
+    const col = w.type==="brass"?"var(--brass)":"var(--tungsten)";
+    const card = document.createElement("div");
+    card.className = "weight-card";
+    card.innerHTML = `
+      <div class="wc-header">
+        <span class="wc-label" style="color:${col}">● ${w.type.toUpperCase()} #${i+1}</span>
+        <button class="wc-remove" data-i="${i}">×</button>
+      </div>
+      <div class="slider-wrap">
+        <div class="slider-row"><span class="lbl">Mass</span><span class="val">${w.mass} gr</span></div>
+        <input type="range" min="3" max="50" step="1" value="${w.mass}" data-i="${i}" data-f="mass">
+      </div>
+      <div class="slider-wrap">
+        <div class="slider-row"><span class="lbl">Position</span><span class="val">${w.position.toFixed(1)}%</span></div>
+        <input type="range" min="5" max="95" step="0.5" value="${w.position}" data-i="${i}" data-f="position">
+      </div>
+      <div class="type-row">
+        <button class="type-btn" data-i="${i}" data-t="brass"
+          style="${w.type==="brass"?`background:rgba(197,148,58,0.15);border-color:var(--brass);color:var(--brass)`:``}">brass</button>
+        <button class="type-btn" data-i="${i}" data-t="tungsten"
+          style="${w.type==="tungsten"?`background:rgba(122,139,153,0.15);border-color:var(--tungsten);color:var(--tungsten)`:``}">tungsten</button>
+      </div>`;
+    list.appendChild(card);
+  });
+
+  list.querySelectorAll(".wc-remove").forEach(btn => {
+    btn.onclick = () => { state.weights.splice(+btn.dataset.i,1); recalc(); renderAll(); buildWeightList(); };
+  });
+  list.querySelectorAll("input[type=range]").forEach(inp => {
+    inp.oninput = () => {
+      const i = +inp.dataset.i, f = inp.dataset.f;
+      state.weights[i][f] = parseFloat(inp.value);
+      recalc(); renderAll(); buildWeightList();
+    };
+  });
+  list.querySelectorAll(".type-btn").forEach(btn => {
+    btn.onclick = () => {
+      state.weights[+btn.dataset.i].type = btn.dataset.t;
+      recalc(); renderAll(); buildWeightList();
+    };
+  });
+
+  document.getElementById("addBtn").style.display = state.weights.length>=8?"none":"block";
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  RENDER ALL
+// ═══════════════════════════════════════════════════════════════
+function renderAll() {
+  renderStats();
+  buildSideStatic();
+  buildStringPath();
+  buildSideWeights();
+  renderTopDown();
+  renderHarmonics();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  ANIMATION LOOP
+// ═══════════════════════════════════════════════════════════════
+function animLoop() {
+  if (state.animating) {
+    state.time += 0.02;
+    buildStringPath();
+  }
+  animFrame = requestAnimationFrame(animLoop);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════
+function init() {
+  // Param sliders
+  const sliders = [
+    { id:"sLen", vId:"vLen", key:"stringLength", fmt:v=>v.toFixed(1)+'"' },
+    { id:"sBrace", vId:"vBrace", key:"braceHeight", fmt:v=>v.toFixed(1)+'"' },
+    { id:"sStrand", vId:"vStrand", key:"strandCount", fmt:v=>v+' strands' },
+    { id:"sTension", vId:"vTension", key:"tension", fmt:v=>v+' lbs' },
+    { id:"sCam", vId:"vCam", key:"camDiameter", fmt:v=>v.toFixed(1)+'"' },
+  ];
+  sliders.forEach(s => {
+    const inp = document.getElementById(s.id);
+    inp.oninput = () => {
+      state[s.key] = parseFloat(inp.value);
+      document.getElementById(s.vId).textContent = s.fmt(state[s.key]);
+      recalc(); renderAll();
+    };
+  });
+
+  buildMaterialButtons();
+  buildWeightList();
+
+  document.getElementById("addBtn").onclick = () => {
+    if (state.weights.length>=8) return;
+    state.weights.push({ position:50, mass:15, type:"brass" });
+    recalc(); renderAll(); buildWeightList();
+  };
+
+  // Vibrate toggle
+  const vBtn = document.getElementById("vibrateBtn");
+  vBtn.onclick = () => {
+    state.animating = !state.animating;
+    if (state.animating) { state.time = 0; vBtn.textContent = "■ STOP"; vBtn.className = ""; }
+    else { vBtn.textContent = "▶ VIBRATE"; vBtn.className = "off"; }
+  };
+
+  renderAll();
+  animLoop();
+}
+
+init();
+</script>
+</body>
+</html>
