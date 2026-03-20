@@ -184,7 +184,7 @@
 - [x] **Theme-matched styling** — Tour tooltips match active theme colors
 - [x] **Version tracking** — Centralized `src/lib/version.ts` with `APP_VERSION`, semantic versioning (MAJOR.MINOR.PATCH), changelog
 - [x] **Version display** — Header shows current version from single source of truth
-- [x] **package.json synced** — `3.0.0`
+- [x] **package.json synced** — `3.1.0`
 
 ---
 
@@ -209,6 +209,70 @@
 - [x] **Slider accessibility** — `aria-valuemin`/`aria-valuemax`/`aria-valuenow`/`aria-valuetext`, proper `<label>` associations with `htmlFor`
 - [x] **High contrast theme** — 7th theme: pure black bg, white text, #00ff88 accent for maximum visibility
 - [x] **Version consistency** — HamburgerMenu footer uses `APP_VERSION` constant (was hardcoded v2.0)
+
+---
+
+## ✅ Phase 8: Testing Suite (Complete)
+
+### 8.1 E2E Tests (Playwright)
+- [x] **Playwright config** — Auto-starts Vite dev server, Chromium project, HTML reporter
+- [x] **App loading tests** — 6 tests: page title, header/version, tabs, stats bar, SVG visualizer, header buttons
+- [x] **Bow configuration tests** — 5 tests: default compound, recurve physics update, bow type switching, material buttons
+- [x] **Tab navigation tests** — 6 tests: all 5 tabs load correct panels, ARIA attributes, aria-selected state
+- [x] **Wizard/modal tests** — 3 tests: Setup Wizard, Glossary, Docs open and close (Escape key)
+- [x] **Theme switching tests** — 4 tests: Midnight default, Neon accent verification, High Contrast colors, all 7 themes error-free
+- [x] **Tour dismissal helper** — MutationObserver removes joyride portal for clean E2E runs
+
+### 8.2 Accessibility Tests (axe-core)
+- [x] **WCAG 2.0 AA scans** — axe-core on main page, Arrow tab, Tune tab (zero critical/serious violations)
+- [x] **High Contrast validation** — Color-contrast checks pass with High Contrast theme
+- [x] **ARIA structure verification** — Tablist with 5 tabs, aria-selected, aria-label on navigation
+- [x] **Skip navigation link** — Present in DOM for keyboard users
+- [x] **Main landmark check** — `<main>` element with proper id
+- [x] **Form label fixes** — Added aria-label to 5 range inputs (DrawCycle, Wizard, TuningPanel, SetupOptimizer) and arrow shaft select; connected label/id on optimizer selects
+
+### 8.3 Visual Regression
+- [x] **Playwright screenshot baselines** — 5 baselines: Midnight, Neon, High Contrast dashboards + Arrow tab + Tune tab
+- [x] **Deterministic captures** — Reduced motion, disabled animations, 2% pixel diff threshold
+- [x] **Update workflow** — `npm run test:e2e:update` regenerates baselines
+
+### 8.4 CI/CD Pipeline
+- [x] **GitHub Actions workflow** — `.github/workflows/test.yml` runs on push/PR to main
+- [x] **Two-stage pipeline** — Unit tests + lint → E2E + accessibility (E2E skipped if units fail)
+- [x] **Artifact uploads** — Playwright report + test results uploaded on failure
+- [x] **Package.json scripts** — `test:e2e`, `test:a11y`, `test:visual`, `test:all`, `test:e2e:ui`
+
+### 8.5 Lint Cleanup
+- [x] **Zero eslint errors** — Removed all unused imports/variables across 15 files
+- [x] **Eliminated `any` types** — Replaced with `Theme["colors"]` in BowDatabase and Wizard
+- [x] **Fixed setState-in-effect** — Lazy initializers (ProfileManager), derived state (GuidedTour), useRef (usePhysicsWorker)
+
+---
+
+## 🔜 Phase 9: Production Readiness (Next)
+
+### 9.1 Error Monitoring
+- [ ] **Sentry integration** — `@sentry/react` for runtime error tracking in production
+- [ ] **Error boundaries** — React error boundaries on major sections (physics, visualizations, modals)
+- [ ] **Performance monitoring** — Sentry performance tracing for physics computation and render times
+
+### 9.2 Production Deployment
+- [ ] **Deploy to Vercel/Netlify** — Production URL with HTTPS
+- [ ] **Open Graph + Twitter cards** — Social preview images for link sharing
+- [ ] **Custom domain** — bowstringdynamics.com or similar
+
+### 9.3 Synthetic Monitoring (Post-Deploy)
+- [ ] **Checkly integration** — Playwright-based checks on production URL (revisit once deployed)
+- [ ] **Uptime monitoring** — Alert on production downtime
+- [ ] **Performance budgets** — Lighthouse CI score thresholds in CI pipeline
+
+---
+
+> **Test Suite Summary:**
+> - 145 unit tests (Vitest) — physics, arrow, store, tuning, phase6, phase7
+> - 31 E2E + accessibility tests (Playwright + axe-core)
+> - 5 visual regression baselines (Playwright screenshots)
+> - **181 total tests**
 
 ---
 

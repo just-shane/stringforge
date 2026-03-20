@@ -8,7 +8,7 @@
 
 <p align="center">
   <strong>v3.1.0</strong> &nbsp;·&nbsp; React 19 + TypeScript &nbsp;·&nbsp; Vite &nbsp;·&nbsp; Zustand &nbsp;·&nbsp; Tailwind v4<br/>
-  <em>145 tests passing &nbsp;·&nbsp; PWA installable &nbsp;·&nbsp; Works offline</em>
+  <em>181 tests passing &nbsp;·&nbsp; PWA installable &nbsp;·&nbsp; Works offline</em>
 </p>
 
 ---
@@ -157,7 +157,10 @@ All 7 themes swap instantly via CSS custom properties. No reload.
 | 📐 Charts | Pure inline SVG — scales perfectly, razor sharp at any zoom |
 | 🧮 Physics | Web Worker with auto-fallback to main thread |
 | 📦 Code Split | React.lazy() + Suspense — 9 lazy-loaded components, ~25% smaller initial bundle |
-| 🧪 Tests | Vitest — 145 tests across 6 test files |
+| 🧪 Unit Tests | Vitest — 145 tests across 6 test files |
+| 🎭 E2E Tests | Playwright — 31 tests: smoke, a11y (axe-core), themes |
+| 📸 Visual Regression | Playwright screenshots — 5 baselines across 3 themes |
+| 🔄 CI/CD | GitHub Actions — unit → E2E on every push/PR |
 | 📱 PWA | manifest.json + service worker (network-first caching) |
 | 🎓 Tour | react-joyride — theme-matched, version-aware |
 
@@ -179,8 +182,13 @@ Open [http://localhost:5173](http://localhost:5173) and start tuning.
 ```bash
 npm run build       # Production build
 npm run preview     # Preview production build
-npm test            # Run all 145 tests
-npm run lint        # TypeScript type checking
+npm test            # Run all 145 unit tests
+npm run test:e2e    # Run 31 Playwright E2E + accessibility tests
+npm run test:a11y   # Run accessibility tests only (axe-core)
+npm run test:visual # Run visual regression tests
+npm run test:all    # Run everything (unit + E2E + a11y)
+npm run test:e2e:ui # Interactive Playwright UI mode
+npm run lint        # ESLint check
 ```
 
 ---
@@ -188,6 +196,19 @@ npm run lint        # TypeScript type checking
 ## 📁 Project Structure
 
 ```
+e2e/
+├── helpers.ts              # Tour dismissal, theme setting, physics wait
+├── app-loads.spec.ts       # Core layout and rendering tests
+├── bow-configuration.spec.ts # Bow type switching and physics updates
+├── tab-navigation.spec.ts  # Tab ARIA attributes and panel loading
+├── wizard-flow.spec.ts     # Setup wizard, glossary, docs modals
+├── theme-switching.spec.ts # All 7 themes load and apply correctly
+├── accessibility.spec.ts   # axe-core WCAG 2.0 AA scans
+└── visual.spec.ts          # Screenshot baselines for regression
+
+.github/workflows/
+└── test.yml                # CI pipeline: unit → E2E + a11y on push/PR
+
 src/
 ├── lib/
 │   ├── physics.ts          # Core physics engine — bow profiles, force-draw, velocity
@@ -225,7 +246,7 @@ src/
 1. Fork the repo
 2. Create a feature branch (`git checkout -b feature/my-thing`)
 3. Write tests for new physics or UI features
-4. Make sure all 145+ tests pass (`npm test`)
+4. Make sure all tests pass (`npm run test:all`)
 5. Open a PR with a clear description
 
 ---
