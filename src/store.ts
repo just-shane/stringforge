@@ -5,6 +5,14 @@ import type { ArrowComponents } from "./lib/arrow.ts";
 import { getThemeById } from "./lib/themes.ts";
 import type { Theme } from "./lib/themes.ts";
 
+export type ShooterHand = "right" | "left";
+
+export interface TuningState {
+  nockHeight: number; // inches above center
+  restPosition: number; // horizontal offset in inches
+  shooterHand: ShooterHand;
+}
+
 function loadThemeId(): string {
   try {
     return localStorage.getItem("bowstring-theme") ?? "midnight";
@@ -26,6 +34,7 @@ interface SimState {
   weights: Weight[];
   arrow: ArrowComponents;
   windSpeed: number;
+  tuning: TuningState;
   animating: boolean;
   theme: Theme;
   menuOpen: boolean;
@@ -39,6 +48,7 @@ interface SimState {
   addWeight: (weight: Weight) => void;
   setArrow: <K extends keyof ArrowComponents>(key: K, value: ArrowComponents[K]) => void;
   setWindSpeed: (speed: number) => void;
+  setTuning: <K extends keyof TuningState>(key: K, value: TuningState[K]) => void;
   setDocsOpen: (open: boolean) => void;
   setAnimating: (animating: boolean) => void;
   setTheme: (id: string) => void;
@@ -73,6 +83,12 @@ export const useSimStore = create<SimState>((set) => ({
   },
 
   windSpeed: 0,
+
+  tuning: {
+    nockHeight: 0.1875, // 3/16" above center (standard starting point)
+    restPosition: 0, // centershot
+    shooterHand: "right",
+  },
 
   animating: true,
   theme: getThemeById(loadThemeId()),
@@ -119,6 +135,9 @@ export const useSimStore = create<SimState>((set) => ({
     set((state) => ({ arrow: { ...state.arrow, [key]: value } })),
 
   setWindSpeed: (speed) => set({ windSpeed: speed }),
+
+  setTuning: (key, value) =>
+    set((state) => ({ tuning: { ...state.tuning, [key]: value } })),
 
   setDocsOpen: (open) => set({ docsOpen: open }),
 

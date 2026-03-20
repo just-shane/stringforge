@@ -14,8 +14,9 @@ import { EnergyBreakdown } from "./components/EnergyBreakdown/EnergyBreakdown.ts
 import { BallisticsTable } from "./components/Ballistics/BallisticsTable.tsx";
 import { DocsPanel } from "./components/Docs/DocsPanel.tsx";
 import { PlacementGuide } from "./components/Layout/PlacementGuide.tsx";
+import { TuningPanel } from "./components/Tuning/TuningPanel.tsx";
 
-type Tab = "bow" | "arrow";
+type Tab = "bow" | "arrow" | "tuning";
 
 export default function App() {
   const params = useSimStore((s) => s.params);
@@ -39,7 +40,7 @@ export default function App() {
           >
             {/* Tab switcher */}
             <div className="flex" style={{ borderBottom: "1px solid var(--c-border)" }}>
-              {(["bow", "arrow"] as Tab[]).map((t) => (
+              {(["bow", "arrow", "tuning"] as Tab[]).map((t) => (
                 <button
                   key={t}
                   onClick={() => setTab(t)}
@@ -50,7 +51,7 @@ export default function App() {
                     borderBottom: tab === t ? "2px solid var(--c-accent)" : "2px solid transparent",
                   }}
                 >
-                  {t === "bow" ? "Bow & String" : "Arrow"}
+                  {t === "bow" ? "Bow & String" : t === "arrow" ? "Arrow" : "Tuning"}
                 </button>
               ))}
             </div>
@@ -58,8 +59,10 @@ export default function App() {
             <div className="p-5">
               {tab === "bow" ? (
                 <ControlPanel />
-              ) : (
+              ) : tab === "arrow" ? (
                 <ArrowBuilder physics={physics} />
+              ) : (
+                <TuningPanel />
               )}
             </div>
           </div>
