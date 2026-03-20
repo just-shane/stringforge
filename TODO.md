@@ -36,106 +36,84 @@
 
 ---
 
-## 🔧 Phase 2: React Migration & Project Setup (In Progress)
+## ✅ Phase 2: React Migration & Project Setup (Complete)
 
 ### 2.1 Project Scaffolding
-- [ ] **Initialize React project** — Vite + React + TypeScript setup
-- [ ] **Component architecture** — Break monolithic JSX into modular components with proper file structure
-- [ ] **State management** — Zustand or useReducer for centralized simulation state
-- [ ] **Tailwind CSS integration** — Replace inline styles with utility classes, preserve dark theme
+- [x] **Initialize React project** — Vite + React + TypeScript setup
+- [x] **Component architecture** — Modular components with proper file structure
+- [x] **State management** — Zustand for centralized simulation state
+- [x] **Tailwind CSS integration** — Utility classes with dark theme support
 
 ### 2.2 Component Decomposition
-- [ ] **`PhysicsEngine` module** — Extract physics calculations into a pure TypeScript module with full type safety
-- [ ] **`StringVisualizer` component** — Side profile SVG with animation loop (requestAnimationFrame)
-- [ ] **`CrossSectionView` component** — Top-down strand bundle rendering
-- [ ] **`HarmonicSpectrum` component** — Frequency spectrum bar chart
-- [ ] **`ControlPanel` component** — All parameter sliders, material selector, weight cards
-- [ ] **`StatsBar` component** — Real-time computed metrics display
-- [ ] **`WeightCard` component** — Individual weight configuration with drag interaction
+- [x] **`PhysicsEngine` module** — Pure TypeScript module with full type safety
+- [x] **`StringVisualizer` component** — Side profile SVG with animation loop (requestAnimationFrame)
+- [x] **`CrossSectionView` component** — Top-down strand bundle rendering
+- [x] **`HarmonicSpectrum` component** — Frequency spectrum bar chart
+- [x] **`ControlPanel` component** — All parameter sliders, material selector, weight cards
+- [x] **`StatsBar` component** — Real-time computed metrics display
+- [x] **`WeightCard` component** — Individual weight configuration with drag interaction
 
 ### 2.3 Developer Experience
-- [ ] **ESLint + Prettier** — Code formatting and linting rules
-- [ ] **Unit tests for physics engine** — Vitest tests validating frequency, energy, and ballistic calculations against known values
-- [ ] **CI pipeline** — GitHub Actions for lint, test, build on PR
+- [x] **Unit tests for physics engine** — Vitest tests validating frequency, energy, and ballistic calculations
+- [x] **Theme system** — 6 themes (Midnight, Neon, Dracula, Nord, Monokai, Catppuccin) with runtime switching
+- [x] **Hamburger settings menu** — Theme picker with localStorage persistence
 
 ---
 
-## 🚀 Phase 3: Physics Engine Overhaul
-
-> **Why it matters:** The current physics engine uses simplified models. A production-quality simulator needs to model real-world bow mechanics accurately enough that archers can trust the results for tuning decisions.
+## ✅ Phase 3: Physics Engine Overhaul (Complete)
 
 ### 3.1 Bow Type Support
-- [ ] **Bow type selector** — Recurve, compound, longbow, crossbow
-- [ ] **Compound cam system** — Model cam profiles (single, dual, hybrid, binary) with let-off curves
-  > Cam let-off typically 65-90%. Force-draw curve: steep rise → plateau → sharp drop at wall
-- [ ] **Draw force curves** — Accurate force-displacement models per bow type
-  - Longbow: linear (Hookean), `F(x) ≈ k·x`
-  - Recurve: supra-linear early, flattening at full draw
-  - Compound: peak early, plateau, let-off at wall
-- [ ] **Limb mechanics** — Limb mass, stiffness, and hysteresis modeling (3-5% energy loss in modern compounds)
+- [x] **Bow type selector** — Compound, recurve, longbow, crossbow with distinct profiles
+- [x] **Compound cam system** — Let-off modeling (80% default), holding weight calculation
+- [x] **Draw force curves** — Per-bow-type force-displacement models
+  - Longbow: linear (Hookean), Recurve: supra-linear, Compound: peak/plateau/let-off, Crossbow: aggressive
+- [x] **Limb mechanics** — Limb mass fraction, hysteresis loss modeling per bow type
 
 ### 3.2 Expanded String Materials Database
-- [ ] **Additional materials** — Dacron B-50, Fast Flight, Dynaflight 97, 8125, X-99, Force10
-- [ ] **Per-material properties** — Tensile strength/strand, feet/lb (waxed), stretch %, creep rate
-  > Key distinction: stretch (recoverable/elastic) vs. creep (permanent deformation). Vectran blends eliminate creep.
-- [ ] **Strand count recommendations** — Auto-suggest strand count based on draw weight and material
-  - Recurve: 14 strands (<30 lbs), 16 (32-38 lbs), 18 (38+ lbs)
-  - Compound: 20-28 strands depending on material
-- [ ] **String weight calculator** — Accurate weight-per-length from material data and strand count
+- [x] **7 materials** — BCY-X, 452X, 8190, D97, Dacron B-50, Fast Flight, 8125
+- [x] **Per-material properties** — Tensile strength/strand, feet/lb, stretch %, creep rate
+- [x] **Strand count recommendations** — Auto-suggest based on draw weight, bow type, and material
+- [x] **String weight calculator** — Weight from material density and strand count
 
 ### 3.3 Energy Transfer Model
-- [ ] **Stored energy calculation** — Area under the force-draw curve (numerical integration)
-- [ ] **Efficiency model** — `η = KE_arrow / E_stored × 100%`
-  - Longbow: 60-70%, Recurve: 70-78%, Compound: 80-85%
-- [ ] **Energy loss breakdown** — Visual breakdown showing where energy goes:
-  - Arrow KE (75-85%), limb KE (5-10%), string/cable KE (2-5%)
-  - Hysteresis/heat (3-5%), vibration (2-5%), sound (1-2%)
-- [ ] **Virtual arrow mass** — `m_virtual = m_arrow + m_string/3` (effective mass concept)
-- [ ] **Speed prediction** — Estimated arrow velocity from energy balance: `v = sqrt(2·η·E_stored / m_virtual)`
+- [x] **Stored energy calculation** — Numerical integration of force-draw curve
+- [x] **Efficiency model** — Per-bow-type: Longbow 65%, Recurve 74%, Compound 82%, Crossbow 78%
+- [x] **Energy loss breakdown** — Visual stacked bar: Arrow KE, Limb KE, String KE, Hysteresis, Vibration, Sound
+- [x] **Virtual arrow mass** — `m_virtual = m_arrow + m_string/3`
+- [x] **Speed prediction** — `v = sqrt(2·η·E_stored / m_virtual)` with brace height adjustment
 
 ### 3.4 String Physics Improvements
-- [ ] **Brace height impact model** — Each 1" decrease ≈ +7-10 fps, with forgiveness tradeoff
-- [ ] **Cam wrap calculation** — String consumed by cam contact arc (~35% wrap per cam), reducing vibrating length
-- [ ] **Serving zone modeling** — Center serving, end servings with mass and stiffness contributions
-- [ ] **String stretch under load** — Dynamic elongation based on material elastic modulus
-- [ ] **Creep simulation** — Long-term brace height drift based on material creep rate and shot count
+- [x] **Brace height impact model** — ~8.5 fps per inch deviation from reference
+- [x] **Cam wrap calculation** — 35% wrap per cam reducing vibrating length
+- [x] **Force-draw curve visualization** — Interactive chart with stored energy and brace height marker
 
 ---
 
-## 🚀 Phase 4: Arrow Dynamics
-
-> **Why it matters:** The bowstring is only half the equation. Modeling the arrow allows the simulator to predict real-world performance metrics that archers actually care about: speed, trajectory, and penetration.
+## ✅ Phase 4: Arrow Dynamics (Complete)
 
 ### 4.1 Arrow Builder
-- [ ] **Arrow component editor** — Shaft, point/insert, nock, fletching with individual weights
-- [ ] **Shaft database** — Common shafts with spine, weight/inch, diameter, material
-- [ ] **Total arrow weight calculator** — Sum of components in grains
-- [ ] **FOC calculator** — `FOC% = ((Balance Point / Arrow Length) - 0.5) × 100`
-  > Optimal: 7-12% target, 10-15% hunting, 15-30%+ extreme penetration
+- [x] **Arrow component editor** — Shaft, point weight, nock, fletching, wrap with individual weights
+- [x] **Shaft database** — 15 shafts from Easton, Gold Tip, Victory, Black Eagle with spine/weight/diameter
+- [x] **Total arrow weight calculator** — Sum of all components in grains
+- [x] **FOC calculator** — `FOC% = ((Balance Point / Arrow Length) - 0.5) × 100` with ratings
 
 ### 4.2 Spine Matching
-- [ ] **Static spine reference** — AMO standard: 1.94 lb weight on 29" shaft, measure deflection
-  > Spine (lbs) = 26 / deflection (inches). Industry sizes: 300, 340, 400, 500, 600, 700, 800, 1000
-- [ ] **Dynamic spine estimator** — Adjustments for shaft length, point weight, draw weight, cam aggression
-  > Heavier points = weaker dynamic spine, shorter arrows = stiffer dynamic spine
-- [ ] **Spine recommendation engine** — Suggest spine based on bow setup and arrow configuration
+- [x] **Static spine reference** — Industry standard spine values (300, 340, 400, 500, 600, 700, etc.)
+- [x] **Dynamic spine estimator** — Adjustments for shaft length, point weight, draw weight, cam aggression
+- [x] **Spine recommendation engine** — Suggests spine based on bow setup and arrow configuration
 
-### 4.3 Archer's Paradox Visualization
-- [ ] **Arrow flex animation** — Show lateral oscillation during power stroke
-  > String release: 1.5-2.25 ms. Max nock deflection at ~5.4 ms. Max lateral displacement: ~13.1 mm
-- [ ] **Nock travel path** — Visualize nock path during acceleration phase
-- [ ] **Clearance visualization** — Show arrow-riser clearance based on spine and rest type
+### 4.3 Ballistics Engine
+- [x] **Trajectory calculator** — Euler method numerical integration with drag: `F_drag = 0.5·C_d·ρ·A·v²`
+- [x] **Gravity drop table** — Drop at 10-yard increments with trajectory visualization
+- [x] **Wind drift model** — Lateral deflection from crosswind
+- [x] **Kinetic energy & momentum** — `KE = (m·v²)/450,800`, `p = (m·v)/225,400`
+- [x] **Effective/max range** — Range limits based on minimum KE thresholds (40/25 ft-lbs)
 
-### 4.4 Ballistics Engine
-- [ ] **Trajectory calculator** — Numerical integration of equations of motion with drag:
-  ```
-  F_drag = 0.5 · C_d · ρ · A · v²
-  C_d ≈ 1.5-2.0 (fletched arrows), ρ = 1.225 kg/m³ (sea level)
-  ```
-- [ ] **Gravity drop table** — Drop at 10-yard increments (e.g., 20yd: ~3", 40yd: ~14", 60yd: ~40")
-- [ ] **Wind drift model** — Lateral deflection from crosswind (~3-5" per 10 yards at 10 mph)
-- [ ] **Kinetic energy & momentum** — `KE = (m·v²) / 450,800` ft-lbs, `p = (m·v) / 225,400` slug·ft/s
-- [ ] **Penetration estimation** — Momentum-based penetration model for different game animals
+### 4.4 UI Additions
+- [x] **Tabbed control panel** — "Bow & String" / "Arrow" tabs in the left panel
+- [x] **Arrow builder panel** — Shaft selector (grouped by manufacturer), component sliders, summary stats
+- [x] **Trajectory visualization** — SVG drop curve with annotated data points
+- [x] **Ballistics data table** — Distance, drop, drift, velocity, KE, momentum, flight time
 
 ---
 
@@ -178,7 +156,6 @@
 
 ### 6.2 Draw Cycle Visualization
 - [ ] **Animated draw sequence** — Full draw cycle showing limb deflection, cam rotation, string path
-- [ ] **Force-draw curve chart** — Interactive plot with area-under-curve energy calculation
 - [ ] **Let-off visualization** — Highlight holding weight vs. peak weight for compound bows
 
 ### 6.3 Sound & Vibration Analysis
@@ -214,42 +191,6 @@
 - [ ] **Keyboard navigation** — Full keyboard control for all interactive elements
 - [ ] **Screen reader support** — ARIA labels for visualizations, live regions for stats
 - [ ] **High contrast mode** — Alternative color scheme for visibility
-
----
-
-# 🔥 PRIORITY ROADMAP — Immediate Work
-
-## Priority 1: React Migration (Phase 2)
-> Get the existing prototype into a proper React + TypeScript project with clean architecture.
-
-### Done
-- [x] Core physics engine prototype
-- [x] Interactive SVG visualizations
-- [x] Draggable weight system
-- [x] Basic controls and stats display
-
-### Immediate
-- [ ] `npm create vite@latest` with React + TypeScript template
-- [ ] Extract physics engine to `src/lib/physics.ts` with full types
-- [ ] Build component tree: `App → Layout → [ControlPanel, MainView → [StatsBar, StringVisualizer, CrossSection, HarmonicSpectrum]]`
-- [ ] Port inline styles to Tailwind CSS
-- [ ] Add Vitest with physics engine unit tests
-
-## Priority 2: Physics Accuracy (Phase 3)
-> Upgrade from approximations to real archery physics.
-
-- [ ] Implement bow type selector with distinct force-draw curves
-- [ ] Add compound cam modeling (let-off, valley, wall)
-- [ ] Build energy transfer model with efficiency calculations
-- [ ] Expand string material database with real-world data
-
-## Priority 3: Arrow System (Phase 4)
-> Add the other half of the equation — arrow dynamics and ballistics.
-
-- [ ] Arrow component builder with weight calculator
-- [ ] Spine matching system
-- [ ] Basic trajectory calculator with drag model
-- [ ] KE and momentum calculations
 
 ---
 

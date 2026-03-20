@@ -80,4 +80,22 @@ describe("useSimStore", () => {
     useSimStore.getState().setAnimating(false);
     expect(useSimStore.getState().animating).toBe(false);
   });
+
+  it("has default arrow components", () => {
+    const { arrow } = useSimStore.getState();
+    expect(arrow.shaft).toBeTruthy();
+    expect(arrow.shaftLength).toBeGreaterThan(0);
+    expect(arrow.pointWeight).toBeGreaterThan(0);
+  });
+
+  it("setArrow updates a single arrow param", () => {
+    useSimStore.getState().setArrow("pointWeight", 150);
+    expect(useSimStore.getState().arrow.pointWeight).toBe(150);
+    expect(useSimStore.getState().arrow.shaftLength).toBe(28);
+  });
+
+  it("setWindSpeed updates wind speed", () => {
+    useSimStore.getState().setWindSpeed(10);
+    expect(useSimStore.getState().windSpeed).toBe(10);
+  });
 });

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { Weight, SimParams, BowType } from "./lib/physics.ts";
 import { BOW_PROFILES } from "./lib/physics.ts";
+import type { ArrowComponents } from "./lib/arrow.ts";
 import { getThemeById } from "./lib/themes.ts";
 import type { Theme } from "./lib/themes.ts";
 
@@ -23,6 +24,8 @@ function saveThemeId(id: string) {
 interface SimState {
   params: SimParams;
   weights: Weight[];
+  arrow: ArrowComponents;
+  windSpeed: number;
   animating: boolean;
   theme: Theme;
   menuOpen: boolean;
@@ -33,6 +36,8 @@ interface SimState {
   updateWeight: (index: number, weight: Weight) => void;
   removeWeight: (index: number) => void;
   addWeight: (weight: Weight) => void;
+  setArrow: <K extends keyof ArrowComponents>(key: K, value: ArrowComponents[K]) => void;
+  setWindSpeed: (speed: number) => void;
   setAnimating: (animating: boolean) => void;
   setTheme: (id: string) => void;
   setMenuOpen: (open: boolean) => void;
@@ -54,6 +59,18 @@ export const useSimStore = create<SimState>((set) => ({
     { position: 25, mass: 15, type: "brass" },
     { position: 75, mass: 15, type: "brass" },
   ],
+
+  arrow: {
+    shaft: "easton-axis-300",
+    shaftLength: 28,
+    pointWeight: 100,
+    nockWeight: 10,
+    fletchingWeight: 24,
+    fletchingLength: 2,
+    wrapWeight: 8,
+  },
+
+  windSpeed: 0,
 
   animating: true,
   theme: getThemeById(loadThemeId()),
@@ -94,6 +111,11 @@ export const useSimStore = create<SimState>((set) => ({
       if (state.weights.length >= 8) return state;
       return { weights: [...state.weights, weight] };
     }),
+
+  setArrow: (key, value) =>
+    set((state) => ({ arrow: { ...state.arrow, [key]: value } })),
+
+  setWindSpeed: (speed) => set({ windSpeed: speed }),
 
   setAnimating: (animating) => set({ animating }),
 
