@@ -1,72 +1,169 @@
-# Bowstring Dynamics Simulator
+# 🏹 Bowstring Dynamics Simulator
 
-A physics-based archery bowstring and arrow simulator built with React + TypeScript. Model string vibration, bow mechanics, arrow ballistics, and bow tuning — all in the browser.
+### Real-time archery physics. In your browser. No excuses.
 
-## What It Does
+<p align="center">
+  <img src="docs/screenshots/hero-main.png" alt="Bowstring Dynamics — main dashboard with string visualizer, stats bar, and control panel" width="100%" />
+</p>
 
-This simulator lets archers and bow technicians experiment with complete bow and arrow configurations and see the physics in real time:
+<p align="center">
+  <strong>v3.1.0</strong> &nbsp;·&nbsp; React 19 + TypeScript &nbsp;·&nbsp; Vite &nbsp;·&nbsp; Zustand &nbsp;·&nbsp; Tailwind v4<br/>
+  <em>145 tests passing &nbsp;·&nbsp; PWA installable &nbsp;·&nbsp; Works offline</em>
+</p>
 
-- **4 bow types** — Compound (with cam let-off), recurve, longbow, and crossbow with distinct force-draw curves
-- **String vibration modeling** — Standing wave simulation with 8 harmonic modes: `f = (n/2L) × √(T/μ)`
-- **7 string materials** — BCY-X, 452X, 8190, D97, Dacron B-50, Fast Flight, 8125 with full material properties
-- **Speed weight optimization** — Place up to 8 weights (brass/tungsten) and visualize vibration damping vs. speed penalty
-- **Arrow builder** — 15 shafts from Easton, Gold Tip, Victory, Black Eagle with component-level weight and FOC calculation
-- **Spine matching** — Dynamic spine estimation with recommendations based on bow setup
-- **Ballistics engine** — Trajectory with drag, gravity drop, wind drift, KE, and momentum at 10-yard intervals
-- **Energy model** — Stored energy, efficiency, and loss breakdown (arrow KE, limb, hysteresis, vibration, sound)
-- **6 themes** — Midnight, Neon, Dracula, Nord, Monokai, Catppuccin with runtime switching
-- **Interactive SVG visualizations** — Side profile, cross-section, force-draw curve, energy breakdown, trajectory chart, harmonic spectrum
+---
 
-## The Physics
+## What Is This?
 
-### Bow Mechanics
+Bowstring Dynamics is a browser-based physics simulator built for archers, bow techs, and engineers who want to **see** what's actually happening when they change string materials, add speed weights, swap arrow shafts, or adjust nock height.
 
-Each bow type has a distinct force-draw curve:
+Every slider you move recalculates the full physics pipeline in real time — string vibration modes, arrow velocity, energy distribution, ballistic trajectory, noise levels — rendered in crisp SVG with zero plugins.
 
-| Bow Type | Draw Curve | Efficiency | Let-Off |
-|----------|-----------|------------|---------|
-| Compound | Peak → plateau → let-off at wall | 80-85% | 65-90% |
-| Recurve  | Supra-linear, flattening | 70-78% | None |
-| Longbow  | Linear (Hookean) | 60-70% | None |
-| Crossbow | Aggressive, short stroke | 75-80% | None |
+Built by [Grace/Prime Engineering](https://github.com/just-shane) to support our competitive archery R&D workflow.
 
-Stored energy is computed by numerical integration of the force-draw curve. Arrow speed derives from:
+---
 
-```
-v = √(2 × η × E_stored / m_virtual)
-m_virtual = m_arrow + m_string/3
-```
+## ⚡ At a Glance
+
+| | |
+|---|---|
+| 🏗️ **4 Bow Families** | Compound (cam let-off), Recurve, Longbow, Crossbow |
+| 🧵 **7 String Materials** | BCY-X, 452X, 8190, D97, Dacron B-50, Fast Flight, 8125 — real specs |
+| 🏹 **15 Arrow Shafts** | Full builder: shaft + point + nock + fletching + wrap → FOC & dynamic spine |
+| ⚖️ **8 Speed Weights** | Brass & tungsten, drag-to-position, see exact fps tradeoff |
+| 📊 **15 Bow Database** | Mathews, Hoyt, Bowtech, PSE, Prime, Elite, Bear, Win&Win + more |
+| 🎨 **7 Themes** | Midnight, Neon, Dracula, Nord, Monokai, Catppuccin, High Contrast |
+
+---
+
+## 🔬 The Physics
+
+This isn't a toy calculator. Every number on screen comes from a real model.
 
 ### String Vibration
+```
+fₙ = (n / 2L) × √(T / μ)
+```
+8 harmonic modes animated in real time. Place weights at antinodes to kill specific frequencies — watch the damping happen live.
 
-The fundamental frequency is calculated from the wave equation with effective mass density accounting for string mass plus distributed weight mass. Weights damp harmonics based on proximity to antinodes — a weight at an antinode of mode `n` maximally damps that mode.
+### Arrow Velocity
+```
+v = √(2 × η × E_stored / m_virtual)
+where m_virtual = m_arrow + m_string/3
+```
+Force-draw curves computed via numerical integration. Efficiency factors calibrated per bow type.
 
-### Arrow Dynamics
+### Ballistics
+```
+F_drag = ½ × Cd × ρ × A × v²
+```
+Euler-integrated trajectory with quadratic drag, gravity, and wind. KE & momentum tables every 10 yards out to 100.
 
-- **FOC** (Front of Center): `FOC% = ((Balance Point / Arrow Length) - 0.5) × 100`
-- **Dynamic spine**: Adjusts static spine for shaft length, point weight, and cam aggression
-- **Trajectory**: Euler method integration with aerodynamic drag `F = 0.5·Cd·ρ·A·v²`
+### Reference Benchmarks
+| Metric | Value |
+|--------|-------|
+| IBO compound speed | ~300 fps (70# / 30" / 350 gr) |
+| String mass (24-strand BCY-X) | 70–90 gr |
+| Speed penalty | ~1.8 fps per 10 gr added |
+| Fundamental frequency | 120–160 Hz |
 
-### Material Properties
+---
 
-| Material | Density | Modulus | Stretch | Creep |
-|----------|---------|---------|---------|-------|
-| BCY-X | 0.0052 g/m | 7.5 GPa | 0.5% | 0.01%/1k |
-| Fast Flight | 0.0042 g/m | 8.0 GPa | 0.8% | 0.02%/1k |
-| Dacron B-50 | 0.0068 g/m | 3.5 GPa | 2.6% | 0.10%/1k |
+## 📸 Screenshots
 
-Higher modulus = more efficient energy transfer. Lower density = lighter string = faster arrow.
+### Dashboard — Midnight Theme
+Full control panel on the left, animated string visualizer with weight positions, real-time stats bar across the top.
 
-## Tech Stack
+<p align="center">
+  <img src="docs/screenshots/hero-main.png" alt="Main dashboard — Midnight theme" width="100%" />
+</p>
 
-- **React 19** + **TypeScript** — Full type safety across physics engine and components
-- **Vite** — Fast dev server and optimized production builds
-- **Zustand** — Lightweight state management with localStorage persistence
-- **Tailwind CSS v4** — Utility-first styling with CSS custom properties for theming
-- **Vitest** — 75+ unit tests covering physics, arrow dynamics, and state management
-- **SVG** — All visualizations rendered as inline SVG for crisp scaling
+### Force-Draw Curve & Energy Breakdown
+See exactly where every ft-lb goes: arrow KE, limb KE, string KE, hysteresis, vibration, and sound losses.
 
-## Getting Started
+<p align="center">
+  <img src="docs/screenshots/charts-energy.png" alt="Force-draw curve and energy breakdown chart" width="100%" />
+</p>
+
+### Sound Analysis & Harmonic Spectrum
+Vibration decay waterfall, calibrated dB noise estimate, and per-harmonic amplitude bars with weight placement guide.
+
+<p align="center">
+  <img src="docs/screenshots/sound-harmonics.png" alt="Sound analysis, vibration waterfall, and harmonic spectrum" width="100%" />
+</p>
+
+### Neon Theme — Same Data, Different Vibe
+All 7 themes swap instantly via CSS custom properties. No reload.
+
+<p align="center">
+  <img src="docs/screenshots/theme-neon.png" alt="Neon theme variant" width="100%" />
+</p>
+
+---
+
+## 🧰 Feature Breakdown
+
+### 🎯 Bow & String Lab
+- **4 bow types** with distinct force-draw profiles and efficiency curves
+- **7 real string materials** — stretch, creep, mass-per-strand all from manufacturer data
+- **Strand count & tension** affect fundamental frequency, harmonic spectrum, everything
+- **Brace height** modeling — see how it shifts stored energy and arrow speed
+
+### 🏹 Arrow Builder
+- **15 real-world shafts** — Easton, Gold Tip, Carbon Express, Victory, Black Eagle
+- Dial in point weight, nock weight, fletching, wraps — down to the grain
+- Instant **FOC calculation**, **static & dynamic spine**, spine match recommendations
+- Wind-adjusted ballistic tables with KE and momentum at every distance
+
+### 🔧 Tuning Tools
+- **Paper tune** diagnostic — reads your tear pattern and tells you what's wrong
+- **Bare shaft** comparison — see point-of-impact shift vs fletched
+- **Walk-back** tune — detects rest alignment issues at distance
+- **Setup optimizer** — recommends nock height, rest position, arrow spine
+
+### 📡 Sound & Vibration
+- **Vibration decay waterfall** — time-frequency visualization of post-shot ring
+- **Calibrated dB estimate** — peak and sustained noise with real-world comparisons
+- **Play Twang** — Web Audio synthesis of your exact string's harmonic profile
+- **Whisper Quiet badge** — earn it by getting noise below threshold
+
+### 🗄️ Database & Profiles
+- **15-bow database** — specs from Mathews, Hoyt, Bowtech, PSE, Prime, Elite, Bear, Win&Win, Gillo, Howard Hill, TenPoint, Ravin
+- **6 arrow presets** — Hunting Heavy, Hunting Standard, Hunting Light, Outdoor Target, Indoor Target, 3D
+- **Save/load profiles** — snapshot your entire setup to localStorage
+- **Share links** — base64-encoded URL shares your full config in one click
+
+### 🧙 Setup Wizard & Tour
+- **Guided wizard** — takes your purpose, experience, arm span → recommends draw weight, length, spine, shaft
+- **11-step guided tour** — walks new users through every feature
+- Version-aware: re-triggers on updates so you discover new stuff
+
+### ♿ Accessibility & PWA
+- Full **ARIA roles** — landmark regions, tablist navigation, live regions, skip-nav link
+- **High Contrast theme** — pure black + white + bright green for maximum readability
+- **PWA installable** — add to home screen, works offline via service worker
+- **State persistence** — every slider position auto-saved to localStorage
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Tech |
+|-------|------|
+| ⚛️ UI | React 19 + TypeScript (strict) |
+| ⚡ Build | Vite — sub-second HMR, tree-shaken production builds |
+| 🧠 State | Zustand — single store, debounced localStorage persistence |
+| 🎨 Styling | Tailwind CSS v4 + CSS custom properties for runtime theming |
+| 📐 Charts | Pure inline SVG — scales perfectly, razor sharp at any zoom |
+| 🧮 Physics | Web Worker with auto-fallback to main thread |
+| 📦 Code Split | React.lazy() + Suspense — 9 lazy-loaded components, ~25% smaller initial bundle |
+| 🧪 Tests | Vitest — 145 tests across 6 test files |
+| 📱 PWA | manifest.json + service worker (network-first caching) |
+| 🎓 Tour | react-joyride — theme-matched, version-aware |
+
+---
+
+## 🚀 Quick Start
 
 ```bash
 git clone https://github.com/just-shane/bowstring-sim.git
@@ -75,61 +172,71 @@ npm install
 npm run dev
 ```
 
-## Project Structure
+Open [http://localhost:5173](http://localhost:5173) and start tuning.
 
-```
-bowstring-sim/
-├── src/
-│   ├── lib/
-│   │   ├── physics.ts        # Bow physics, energy model, string vibration
-│   │   ├── arrow.ts           # Arrow builder, spine, FOC, ballistics
-│   │   └── themes.ts          # 6 color themes
-│   ├── components/
-│   │   ├── ArrowBuilder/      # Arrow component editor with shaft database
-│   │   ├── Ballistics/        # Trajectory chart and data table
-│   │   ├── ControlPanel/      # Bow/string parameter controls
-│   │   ├── CrossSectionView/  # Top-down strand bundle
-│   │   ├── DrawCurve/         # Force-draw curve visualization
-│   │   ├── EnergyBreakdown/   # Energy distribution stacked bar
-│   │   ├── HarmonicSpectrum/  # Frequency spectrum chart
-│   │   ├── Layout/            # Header, ThemeProvider, PlacementGuide
-│   │   ├── Menu/              # Hamburger settings menu
-│   │   ├── StatsBar/          # Real-time metrics display
-│   │   ├── StringVisualizer/  # Side profile with animation
-│   │   └── WeightCard/        # Individual weight configuration
-│   ├── __tests__/
-│   │   ├── physics.test.ts    # 40 physics engine tests
-│   │   ├── arrow.test.ts      # 24 arrow dynamics tests
-│   │   └── store.test.ts      # 11 state management tests
-│   ├── store.ts               # Zustand store
-│   └── App.tsx                # Root layout with tabbed panels
-├── TODO.md                    # 7-phase project roadmap
-└── README.md
+### Other Commands
+
+```bash
+npm run build       # Production build
+npm run preview     # Preview production build
+npm test            # Run all 145 tests
+npm run lint        # TypeScript type checking
 ```
 
-## Reference Values
+---
 
-| Metric | Value | Context |
-|--------|-------|---------|
-| Arrow speed | 290-310 fps | 70 lb compound, 30" draw, 350gr arrow (IBO) |
-| String weight | 70-90 grains | 24-strand BCY-X compound string |
-| Bow efficiency | 80-85% | Modern compound bow |
-| Speed loss | ~1.8 fps / 10gr | Weight added to string |
-| Arrow KE | 79.9 ft-lbs | 300 fps, 400gr arrow |
-| String frequency | 120-160 Hz | Fundamental, 350 lbs, ~50" vibrating length |
+## 📁 Project Structure
 
-## Key Formulas
+```
+src/
+├── lib/
+│   ├── physics.ts          # Core physics engine — bow profiles, force-draw, velocity
+│   ├── physics.worker.ts   # Web Worker entry point
+│   ├── usePhysicsWorker.ts # React hook — worker with auto-fallback
+│   ├── arrow.ts            # Arrow builder — shafts, FOC, spine, ballistics
+│   ├── audio.ts            # Sound synthesis, vibration waterfall, draw cycle
+│   ├── bows.ts             # Bow database, profiles, presets, share links
+│   ├── glossary.ts         # 28 archery terms + wizard recommendation engine
+│   ├── themes.ts           # 7 themes with full color token system
+│   ├── persist.ts          # localStorage state persistence
+│   └── version.ts          # Single source of truth for version
+├── components/
+│   ├── StringVisualizer/   # Animated SVG string with harmonic modes
+│   ├── ControlPanel/       # Sliders, bow type picker, material selector
+│   ├── StatsBar/           # Real-time speed, energy, mass, frequency readout
+│   ├── DrawCycle/          # Animated draw sequence visualization
+│   ├── SoundAnalysis/      # Waterfall, dB meter, Play Twang
+│   ├── BowDatabase/        # Searchable bow specs + arrow presets
+│   ├── Profiles/           # Save/load/delete user profiles
+│   ├── ShareExport/        # Share links + text report export
+│   ├── Glossary/           # Modal glossary with search
+│   ├── Wizard/             # Multi-step setup wizard
+│   ├── Tour/               # Guided tour (react-joyride)
+│   ├── Tuning/             # Paper tune, bare shaft, walk-back, optimizer
+│   └── Layout/             # Header, hamburger menu
+├── store.ts                # Zustand store — params, weights, arrow, tuning
+└── App.tsx                 # Root — lazy loading, tabs, layout, ARIA
+```
 
-| Formula | Expression |
-|---------|-----------|
-| Kinetic Energy | `KE = (m_gr × v_fps²) / 450,800` ft-lbs |
-| Momentum | `p = (m_gr × v_fps) / 225,400` slug·ft/s |
-| FOC | `((Balance / Length) - 0.5) × 100` % |
-| Static Spine | `26 / deflection_in` lbs |
-| Drag Force | `F = 0.5 × Cd × ρ × A × v²` N |
-| String Frequency | `fₙ = (n / 2L) × √(T / μ)` Hz |
-| Stored Energy | Area under force-draw curve (numerical integration) |
+---
 
-## License
+## 🤝 Contributing
 
-MIT
+1. Fork the repo
+2. Create a feature branch (`git checkout -b feature/my-thing`)
+3. Write tests for new physics or UI features
+4. Make sure all 145+ tests pass (`npm test`)
+5. Open a PR with a clear description
+
+---
+
+## 📄 License
+
+MIT — do what you want, just don't claim you invented bowstring physics.
+
+---
+
+<p align="center">
+  <strong>Built with 🏹 by Grace/Prime Engineering</strong><br/>
+  <em>Because if you can't measure it, you can't tune it.</em>
+</p>
