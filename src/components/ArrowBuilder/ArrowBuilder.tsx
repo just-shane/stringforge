@@ -52,6 +52,7 @@ export function ArrowBuilder({ physics }: ArrowBuilderProps) {
         <select
           value={arrow.shaft}
           onChange={(e) => setArrow("shaft", e.target.value)}
+          aria-label="Arrow shaft selection"
           className="w-full px-2 py-1.5 rounded text-[10px] font-mono cursor-pointer"
           style={{
             background: "var(--c-surface)",

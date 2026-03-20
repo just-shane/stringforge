@@ -37,8 +37,9 @@ export function SetupOptimizer() {
         </div>
         <div className="grid grid-cols-2 gap-2 mb-2">
           <div>
-            <label className="text-[9px] block mb-0.5" style={{ color: "var(--c-text-muted)" }}>Max Weights</label>
+            <label htmlFor="opt-max-weights" className="text-[9px] block mb-0.5" style={{ color: "var(--c-text-muted)" }}>Max Weights</label>
             <select
+              id="opt-max-weights"
               value={maxCount}
               onChange={(e) => setMaxCount(Number(e.target.value))}
               className="w-full text-[10px] font-mono rounded px-2 py-1 cursor-pointer"
@@ -49,8 +50,9 @@ export function SetupOptimizer() {
             </select>
           </div>
           <div>
-            <label className="text-[9px] block mb-0.5" style={{ color: "var(--c-text-muted)" }}>Material</label>
+            <label htmlFor="opt-material" className="text-[9px] block mb-0.5" style={{ color: "var(--c-text-muted)" }}>Material</label>
             <select
+              id="opt-material"
               value={weightType}
               onChange={(e) => setWeightType(e.target.value as "brass" | "tungsten")}
               className="w-full text-[10px] font-mono rounded px-2 py-1 cursor-pointer"
@@ -62,7 +64,7 @@ export function SetupOptimizer() {
           </div>
         </div>
         <div>
-          <label className="text-[9px] block mb-0.5" style={{ color: "var(--c-text-muted)" }}>Max Total Mass</label>
+          <label htmlFor="opt-max-mass" className="text-[9px] block mb-0.5" style={{ color: "var(--c-text-muted)" }}>Max Total Mass</label>
           <input
             type="range"
             min={10}
@@ -70,6 +72,8 @@ export function SetupOptimizer() {
             step={5}
             value={maxMass}
             onChange={(e) => setMaxMass(Number(e.target.value))}
+            id="opt-max-mass"
+            aria-label="Maximum total weight mass"
             className="w-full cursor-pointer"
           />
           <div className="text-[9px] font-mono text-right" style={{ color: "var(--c-accent)" }}>{maxMass} gr</div>

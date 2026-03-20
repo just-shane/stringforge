@@ -63,6 +63,7 @@ export function TuningPanel() {
           step={0.03125}
           value={tuning.nockHeight}
           onChange={(e) => setTuning("nockHeight", parseFloat(e.target.value))}
+          aria-label="Nock height adjustment"
           className="w-full cursor-pointer"
         />
         <div className="flex justify-between text-[8px] font-mono" style={{ color: "var(--c-text-faint)" }}>
@@ -87,6 +88,7 @@ export function TuningPanel() {
           step={0.015625}
           value={tuning.restPosition}
           onChange={(e) => setTuning("restPosition", parseFloat(e.target.value))}
+          aria-label="Rest position offset"
           className="w-full cursor-pointer"
         />
         <div className="flex justify-between text-[8px] font-mono" style={{ color: "var(--c-text-faint)" }}>

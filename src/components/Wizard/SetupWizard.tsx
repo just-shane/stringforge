@@ -207,6 +207,7 @@ export function SetupWizard({ onClose }: SetupWizardProps) {
                     max={84}
                     value={armSpan}
                     onChange={(e) => setArmSpan(Number(e.target.value))}
+                    aria-label="Arm span in inches"
                     className="flex-1"
                     style={{ accentColor: c.accent }}
                   />

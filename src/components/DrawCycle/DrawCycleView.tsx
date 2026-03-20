@@ -305,6 +305,7 @@ export function DrawCycleView() {
               setPlaying(false);
               setFrameIndex(Number(e.target.value));
             }}
+            aria-label="Draw cycle frame scrubber"
             className="w-full h-1 appearance-none rounded cursor-pointer"
             style={{
               background: `linear-gradient(to right, ${c.accent} ${(frameIndex / (cycle.frames.length - 1)) * 100}%, ${c.border} ${(frameIndex / (cycle.frames.length - 1)) * 100}%)`,
