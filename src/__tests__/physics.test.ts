@@ -5,6 +5,7 @@ import {
   GRAIN_TO_KG,
   INCH_TO_M,
   LBF_TO_N,
+  HARMONIC_MODES,
 } from "../lib/physics";
 import type { SimParams, Weight } from "../lib/physics";
 
@@ -26,7 +27,7 @@ describe("computePhysics", () => {
     const result = computePhysics(DEFAULT_PARAMS, DEFAULT_WEIGHTS);
 
     expect(result.fundamentalFreq).toBeGreaterThan(0);
-    expect(result.harmonics).toHaveLength(8);
+    expect(result.harmonics).toHaveLength(HARMONIC_MODES);
     expect(result.totalMassGrains).toBeGreaterThan(0);
     expect(result.stringMassGrains).toBeGreaterThan(0);
     expect(result.weightMassGrains).toBeGreaterThan(0);

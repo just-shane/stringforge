@@ -2,6 +2,7 @@
 export const GRAIN_TO_KG = 0.0000648;
 export const INCH_TO_M = 0.0254;
 export const LBF_TO_N = 4.44822;
+export const HARMONIC_MODES = 8;
 
 // ─── Types ──────────────────────────────────────────────────────
 export type WeightType = "brass" | "tungsten";
@@ -92,7 +93,7 @@ export function computePhysics(params: SimParams, weights: Weight[]): PhysicsRes
 
   // Compute first 8 harmonics with weight-based damping
   const harmonics: Harmonic[] = [];
-  for (let n = 1; n <= 8; n++) {
+  for (let n = 1; n <= HARMONIC_MODES; n++) {
     let amplitude = 1 / n;
 
     // Each weight damps harmonics based on proximity to antinodes
