@@ -131,6 +131,8 @@ export function StringVisualizer({ physics }: StringVisualizerProps) {
           background: "var(--c-surface)",
           border: "1px solid var(--c-border-light)",
         }}
+        role="img"
+        aria-label="Bowstring side profile visualization showing string vibration and weight positions"
       >
         {gridLines}
 

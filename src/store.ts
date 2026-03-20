@@ -4,6 +4,7 @@ import { BOW_PROFILES } from "./lib/physics.ts";
 import type { ArrowComponents } from "./lib/arrow.ts";
 import { getThemeById } from "./lib/themes.ts";
 import type { Theme } from "./lib/themes.ts";
+import { loadPersistedState, persistState } from "./lib/persist.ts";
 
 export type ShooterHand = "right" | "left";
 
@@ -28,6 +29,42 @@ function saveThemeId(id: string) {
     // localStorage unavailable
   }
 }
+
+// ─── Defaults ──────────────────────────────────────────────────
+const DEFAULT_PARAMS: SimParams = {
+  bowType: "compound",
+  stringLength: 57.5,
+  strandCount: 28,
+  material: "BCY-X",
+  tension: 350,
+  braceHeight: 7.0,
+  drawWeight: 70,
+  drawLength: 30,
+};
+
+const DEFAULT_WEIGHTS: Weight[] = [
+  { position: 25, mass: 15, type: "brass" },
+  { position: 75, mass: 15, type: "brass" },
+];
+
+const DEFAULT_ARROW: ArrowComponents = {
+  shaft: "easton-axis-300",
+  shaftLength: 28,
+  pointWeight: 100,
+  nockWeight: 10,
+  fletchingWeight: 24,
+  fletchingLength: 2,
+  wrapWeight: 8,
+};
+
+const DEFAULT_TUNING: TuningState = {
+  nockHeight: 0.1875, // 3/16" above center (standard starting point)
+  restPosition: 0, // centershot
+  shooterHand: "right",
+};
+
+// Load persisted state or use defaults
+const persisted = loadPersistedState();
 
 interface SimState {
   params: SimParams;
@@ -60,39 +97,11 @@ interface SimState {
 }
 
 export const useSimStore = create<SimState>((set) => ({
-  params: {
-    bowType: "compound",
-    stringLength: 57.5,
-    strandCount: 28,
-    material: "BCY-X",
-    tension: 350,
-    braceHeight: 7.0,
-    drawWeight: 70,
-    drawLength: 30,
-  },
-
-  weights: [
-    { position: 25, mass: 15, type: "brass" },
-    { position: 75, mass: 15, type: "brass" },
-  ],
-
-  arrow: {
-    shaft: "easton-axis-300",
-    shaftLength: 28,
-    pointWeight: 100,
-    nockWeight: 10,
-    fletchingWeight: 24,
-    fletchingLength: 2,
-    wrapWeight: 8,
-  },
-
-  windSpeed: 0,
-
-  tuning: {
-    nockHeight: 0.1875, // 3/16" above center (standard starting point)
-    restPosition: 0, // centershot
-    shooterHand: "right",
-  },
+  params: persisted?.params ?? DEFAULT_PARAMS,
+  weights: persisted?.weights ?? DEFAULT_WEIGHTS,
+  arrow: persisted?.arrow ?? DEFAULT_ARROW,
+  windSpeed: persisted?.windSpeed ?? 0,
+  tuning: persisted?.tuning ?? DEFAULT_TUNING,
 
   animating: true,
   theme: getThemeById(loadThemeId()),
@@ -161,3 +170,20 @@ export const useSimStore = create<SimState>((set) => ({
 
   setMenuOpen: (open) => set({ menuOpen: open }),
 }));
+
+// ─── Auto-persist on state changes ────────────────────────────
+// Debounced subscription so we don't hammer localStorage on every slider tick.
+let persistTimer: ReturnType<typeof setTimeout> | null = null;
+
+useSimStore.subscribe((state) => {
+  if (persistTimer) clearTimeout(persistTimer);
+  persistTimer = setTimeout(() => {
+    persistState({
+      params: state.params,
+      weights: state.weights,
+      arrow: state.arrow,
+      windSpeed: state.windSpeed,
+      tuning: state.tuning,
+    });
+  }, 500);
+});

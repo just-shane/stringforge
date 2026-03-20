@@ -1,6 +1,7 @@
-import { useMemo, useState, useEffect, useCallback } from "react";
+import { useMemo, useState, useEffect, useCallback, lazy, Suspense } from "react";
 import { useSimStore } from "./store.ts";
 import { computePhysics } from "./lib/physics.ts";
+import { usePhysicsWorker } from "./lib/usePhysicsWorker.ts";
 import { decodeShareLink } from "./lib/bows.ts";
 import { ThemeProvider } from "./components/Layout/ThemeProvider.tsx";
 import { Header } from "./components/Layout/Header.tsx";
@@ -13,19 +14,34 @@ import { HarmonicSpectrum } from "./components/HarmonicSpectrum/HarmonicSpectrum
 import { DrawCurve } from "./components/DrawCurve/DrawCurve.tsx";
 import { EnergyBreakdown } from "./components/EnergyBreakdown/EnergyBreakdown.tsx";
 import { BallisticsTable } from "./components/Ballistics/BallisticsTable.tsx";
-import { DocsPanel } from "./components/Docs/DocsPanel.tsx";
 import { PlacementGuide } from "./components/Layout/PlacementGuide.tsx";
-import { TuningPanel } from "./components/Tuning/TuningPanel.tsx";
-import { BowDatabase } from "./components/BowDatabase/BowDatabase.tsx";
-import { ProfileManager } from "./components/Profiles/ProfileManager.tsx";
-import { DrawCycleView } from "./components/DrawCycle/DrawCycleView.tsx";
-import { SoundAnalysis } from "./components/SoundAnalysis/SoundAnalysis.tsx";
-import { ShareExport } from "./components/ShareExport/ShareExport.tsx";
-import { GlossaryPanel } from "./components/Glossary/GlossaryPanel.tsx";
-import { SetupWizard } from "./components/Wizard/SetupWizard.tsx";
 import { GuidedTour } from "./components/Tour/GuidedTour.tsx";
 
+// Lazy-loaded panels (not needed on initial render)
+const DocsPanel = lazy(() => import("./components/Docs/DocsPanel.tsx").then((m) => ({ default: m.DocsPanel })));
+const GlossaryPanel = lazy(() => import("./components/Glossary/GlossaryPanel.tsx").then((m) => ({ default: m.GlossaryPanel })));
+const SetupWizard = lazy(() => import("./components/Wizard/SetupWizard.tsx").then((m) => ({ default: m.SetupWizard })));
+const TuningPanel = lazy(() => import("./components/Tuning/TuningPanel.tsx").then((m) => ({ default: m.TuningPanel })));
+const BowDatabase = lazy(() => import("./components/BowDatabase/BowDatabase.tsx").then((m) => ({ default: m.BowDatabase })));
+const ProfileManager = lazy(() => import("./components/Profiles/ProfileManager.tsx").then((m) => ({ default: m.ProfileManager })));
+const DrawCycleView = lazy(() => import("./components/DrawCycle/DrawCycleView.tsx").then((m) => ({ default: m.DrawCycleView })));
+const SoundAnalysis = lazy(() => import("./components/SoundAnalysis/SoundAnalysis.tsx").then((m) => ({ default: m.SoundAnalysis })));
+const ShareExport = lazy(() => import("./components/ShareExport/ShareExport.tsx").then((m) => ({ default: m.ShareExport })));
+
 type Tab = "bow" | "arrow" | "tuning" | "database" | "profiles";
+
+function LazyFallback() {
+  return (
+    <div className="flex items-center justify-center py-8">
+      <span
+        className="text-[10px] font-mono uppercase tracking-wider animate-pulse"
+        style={{ color: "var(--c-text-dim)" }}
+      >
+        Loading...
+      </span>
+    </div>
+  );
+}
 
 export default function App() {
   const params = useSimStore((s) => s.params);
@@ -42,8 +58,10 @@ export default function App() {
   const setArrow = useSimStore((s) => s.setArrow);
   const [tab, setTab] = useState<Tab>("bow");
   const [tourRunning, setTourRunning] = useState(false);
+  const [mobilePanel, setMobilePanel] = useState(true); // show control panel on mobile
 
-  const physics = useMemo(() => computePhysics(params, weights), [params, weights]);
+  // Use Web Worker for physics (falls back to main thread)
+  const physics = usePhysicsWorker(params, weights);
 
   // Handle share link on load
   useEffect(() => {
@@ -68,10 +86,22 @@ export default function App() {
         setArrow("fletchingLength", a.fletchingLength);
         setArrow("wrapWeight", a.wrapWeight);
       }, 0);
-      // Clean up URL
       window.history.replaceState({}, "", window.location.pathname);
     }
   }, []);
+
+  // Keyboard shortcut: Escape closes modals
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (docsOpen) setDocsOpen(false);
+        else if (glossaryOpen) setGlossaryOpen(false);
+        else if (wizardOpen) setWizardOpen(false);
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [docsOpen, glossaryOpen, wizardOpen, setDocsOpen, setGlossaryOpen, setWizardOpen]);
 
   const handleReplayTour = useCallback(() => {
     setTourRunning(true);
@@ -87,17 +117,49 @@ export default function App() {
           onFinish={() => setTourRunning(false)}
         />
 
-        <div className="flex max-md:flex-col">
+        <main id="main-content" className="flex max-md:flex-col">
+          {/* Mobile toggle */}
+          <div className="md:hidden flex" style={{ borderBottom: "1px solid var(--c-border)" }}>
+            <button
+              onClick={() => setMobilePanel(true)}
+              className="flex-1 py-2 text-[10px] font-mono uppercase tracking-wider cursor-pointer"
+              style={{
+                background: mobilePanel ? "var(--c-accent-dim)" : "transparent",
+                color: mobilePanel ? "var(--c-accent)" : "var(--c-text-dim)",
+                borderBottom: mobilePanel ? "2px solid var(--c-accent)" : "2px solid transparent",
+              }}
+              aria-pressed={mobilePanel}
+            >
+              Controls
+            </button>
+            <button
+              onClick={() => setMobilePanel(false)}
+              className="flex-1 py-2 text-[10px] font-mono uppercase tracking-wider cursor-pointer"
+              style={{
+                background: !mobilePanel ? "var(--c-accent-dim)" : "transparent",
+                color: !mobilePanel ? "var(--c-accent)" : "var(--c-text-dim)",
+                borderBottom: !mobilePanel ? "2px solid var(--c-accent)" : "2px solid transparent",
+              }}
+              aria-pressed={!mobilePanel}
+            >
+              Visualizations
+            </button>
+          </div>
+
           {/* Left Panel: Controls */}
           <div
-            className="w-72 min-w-72 shrink-0 overflow-y-auto max-h-[calc(100vh-65px)] max-md:w-full max-md:min-w-0 max-md:max-h-[40vh] max-md:border-b"
+            className={`w-72 min-w-72 shrink-0 overflow-y-auto max-h-[calc(100vh-65px)] max-md:w-full max-md:min-w-0 max-md:max-h-[calc(100vh-110px)] ${!mobilePanel ? "max-md:hidden" : ""}`}
             style={{ borderRight: "1px solid var(--c-border)", borderColor: "var(--c-border)" }}
+            role="navigation"
+            aria-label="Configuration panels"
           >
             {/* Tab switcher */}
             <div
               data-tour="tab-switcher"
               className="flex flex-wrap"
               style={{ borderBottom: "1px solid var(--c-border)" }}
+              role="tablist"
+              aria-label="Configuration tabs"
             >
               {(["bow", "arrow", "tuning", "database", "profiles"] as Tab[]).map((t) => (
                 <button
@@ -109,6 +171,10 @@ export default function App() {
                     color: tab === t ? "var(--c-accent)" : "var(--c-text-dim)",
                     borderBottom: tab === t ? "2px solid var(--c-accent)" : "2px solid transparent",
                   }}
+                  role="tab"
+                  aria-selected={tab === t}
+                  aria-controls={`panel-${t}`}
+                  tabIndex={tab === t ? 0 : -1}
                 >
                   {t === "bow"
                     ? "Bow"
@@ -123,23 +189,35 @@ export default function App() {
               ))}
             </div>
 
-            <div data-tour="control-panel" className="p-5">
-              {tab === "bow" ? (
-                <ControlPanel />
-              ) : tab === "arrow" ? (
-                <ArrowBuilder physics={physics} />
-              ) : tab === "tuning" ? (
-                <TuningPanel />
-              ) : tab === "database" ? (
-                <BowDatabase />
-              ) : (
-                <ProfileManager />
-              )}
+            <div
+              data-tour="control-panel"
+              className="p-5"
+              role="tabpanel"
+              id={`panel-${tab}`}
+              aria-label={`${tab} configuration`}
+            >
+              <Suspense fallback={<LazyFallback />}>
+                {tab === "bow" ? (
+                  <ControlPanel />
+                ) : tab === "arrow" ? (
+                  <ArrowBuilder physics={physics} />
+                ) : tab === "tuning" ? (
+                  <TuningPanel />
+                ) : tab === "database" ? (
+                  <BowDatabase />
+                ) : (
+                  <ProfileManager />
+                )}
+              </Suspense>
             </div>
           </div>
 
           {/* Right Panel: Visualizations */}
-          <div className="flex-1 p-5 min-w-0 overflow-y-auto max-h-[calc(100vh-65px)]">
+          <div
+            className={`flex-1 p-5 min-w-0 overflow-y-auto max-h-[calc(100vh-65px)] max-md:max-h-[calc(100vh-110px)] ${mobilePanel ? "max-md:hidden" : ""}`}
+            role="region"
+            aria-label="Visualizations and analysis"
+          >
             <div data-tour="stats-bar">
               <StatsBar physics={physics} />
             </div>
@@ -177,9 +255,11 @@ export default function App() {
               </div>
             </div>
 
-            {/* Draw Cycle Animation */}
+            {/* Draw Cycle Animation (lazy) */}
             <div data-tour="draw-cycle" className="mb-4">
-              <DrawCycleView />
+              <Suspense fallback={<LazyFallback />}>
+                <DrawCycleView />
+              </Suspense>
             </div>
 
             {/* Ballistics section */}
@@ -187,9 +267,11 @@ export default function App() {
               <BallisticsTable physics={physics} />
             </div>
 
-            {/* Sound & Vibration Analysis */}
+            {/* Sound & Vibration Analysis (lazy) */}
             <div data-tour="sound-analysis" className="mb-4">
-              <SoundAnalysis physics={physics} />
+              <Suspense fallback={<LazyFallback />}>
+                <SoundAnalysis physics={physics} />
+              </Suspense>
             </div>
 
             <div className="flex gap-3 flex-wrap mb-4">
@@ -209,9 +291,11 @@ export default function App() {
               </div>
             </div>
 
-            {/* Share & Export */}
+            {/* Share & Export (lazy) */}
             <div data-tour="share-export" className="mb-4">
-              <ShareExport physics={physics} />
+              <Suspense fallback={<LazyFallback />}>
+                <ShareExport physics={physics} />
+              </Suspense>
             </div>
 
             {/* Replay tour link */}
@@ -225,12 +309,15 @@ export default function App() {
               </button>
             </div>
           </div>
-        </div>
+        </main>
       </div>
 
-      {docsOpen && <DocsPanel onClose={() => setDocsOpen(false)} />}
-      {glossaryOpen && <GlossaryPanel onClose={() => setGlossaryOpen(false)} />}
-      {wizardOpen && <SetupWizard onClose={() => setWizardOpen(false)} />}
+      {/* Lazy-loaded modals */}
+      <Suspense fallback={null}>
+        {docsOpen && <DocsPanel onClose={() => setDocsOpen(false)} />}
+        {glossaryOpen && <GlossaryPanel onClose={() => setGlossaryOpen(false)} />}
+        {wizardOpen && <SetupWizard onClose={() => setWizardOpen(false)} />}
+      </Suspense>
     </ThemeProvider>
   );
 }

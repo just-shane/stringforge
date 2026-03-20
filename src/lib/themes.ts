@@ -175,6 +175,30 @@ export const THEMES: Theme[] = [
       string: "#bac2de",
     },
   },
+  {
+    id: "high-contrast",
+    name: "High Contrast",
+    description: "Maximum visibility",
+    colors: {
+      bg: "#000000",
+      panel: "#0a0a0a",
+      surface: "rgba(255,255,255,0.06)",
+      border: "#444444",
+      borderLight: "#666666",
+      text: "#ffffff",
+      textMuted: "#e0e0e0",
+      textDim: "#bbbbbb",
+      textFaint: "#888888",
+      accent: "#00ff88",
+      accentDim: "rgba(0,255,136,0.2)",
+      accentGlow: "rgba(0,255,136,0.08)",
+      warn: "#ffff00",
+      danger: "#ff3333",
+      brass: "#ffcc00",
+      tungsten: "#aaccff",
+      string: "#ffffff",
+    },
+  },
 ];
 
 export function getThemeById(id: string): Theme {

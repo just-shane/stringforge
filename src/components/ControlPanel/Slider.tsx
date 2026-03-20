@@ -9,20 +9,31 @@ interface SliderProps {
 }
 
 export function Slider({ label, value, min, max, step, unit, onChange }: SliderProps) {
-  const display = step < 1 ? value.toFixed(1) : String(value);
+  const display = step < 1 ? value.toFixed(step < 0.5 ? 2 : 1) : String(value);
+  const id = `slider-${label.toLowerCase().replace(/\s+/g, "-")}`;
 
   return (
-    <div className="mb-3">
+    <div className="mb-3" role="group" aria-labelledby={`${id}-label`}>
       <div className="flex justify-between mb-0.5">
-        <span className="text-[11px]" style={{ color: "var(--c-text-muted)" }}>
+        <label
+          id={`${id}-label`}
+          htmlFor={id}
+          className="text-[11px]"
+          style={{ color: "var(--c-text-muted)" }}
+        >
           {label}
-        </span>
-        <span className="text-[11px] font-mono" style={{ color: "var(--c-accent)" }}>
+        </label>
+        <span
+          className="text-[11px] font-mono"
+          style={{ color: "var(--c-accent)" }}
+          aria-live="polite"
+        >
           {display}
           {unit}
         </span>
       </div>
       <input
+        id={id}
         type="range"
         min={min}
         max={max}
@@ -30,6 +41,10 @@ export function Slider({ label, value, min, max, step, unit, onChange }: SliderP
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
         className="w-full cursor-pointer"
+        aria-valuemin={min}
+        aria-valuemax={max}
+        aria-valuenow={value}
+        aria-valuetext={`${display}${unit}`}
       />
     </div>
   );

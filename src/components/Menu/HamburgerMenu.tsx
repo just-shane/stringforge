@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useSimStore } from "../../store.ts";
 import { THEMES } from "../../lib/themes.ts";
+import { APP_VERSION } from "../../lib/version.ts";
 
 export function HamburgerMenu() {
   const menuOpen = useSimStore((s) => s.menuOpen);
@@ -145,7 +146,7 @@ export function HamburgerMenu() {
               borderTop: `1px solid var(--c-border)`,
             }}
           >
-            v2.0 — Bowstring Dynamics
+            v{APP_VERSION} — Bowstring Dynamics
           </div>
         </div>
       )}

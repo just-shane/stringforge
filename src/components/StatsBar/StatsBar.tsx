@@ -16,6 +16,8 @@ function Stat({ label, value, unit, colorVar = "var(--c-text)", sub }: StatProps
         background: "var(--c-surface)",
         border: "1px solid var(--c-border)",
       }}
+      role="status"
+      aria-label={`${label}: ${value} ${unit}${sub ? `, ${sub}` : ""}`}
     >
       <div
         className="text-[9px] uppercase tracking-[1.5px] font-mono mb-0.5"
@@ -46,7 +48,7 @@ interface StatsBarProps {
 
 export function StatsBar({ physics }: StatsBarProps) {
   return (
-    <div className="flex gap-2 mb-4 flex-wrap">
+    <div className="flex gap-2 mb-4 flex-wrap" role="region" aria-label="Key metrics dashboard">
       <Stat
         label="Est. Speed"
         value={physics.estimatedFPS.toFixed(0)}
