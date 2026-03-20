@@ -1,7 +1,7 @@
-import type { SimParams, Weight, BowType } from "./physics.ts";
-import { computePhysics, STRING_MATERIALS, BOW_PROFILES } from "./physics.ts";
+import type { SimParams, Weight } from "./physics.ts";
+import { computePhysics } from "./physics.ts";
 import type { ArrowComponents } from "./arrow.ts";
-import { computeArrow, computeDynamicSpine, getRecommendedSpine, getSpineMatch, ARROW_SHAFTS } from "./arrow.ts";
+import { computeDynamicSpine, getRecommendedSpine, getSpineMatch, ARROW_SHAFTS } from "./arrow.ts";
 
 // ═══════════════════════════════════════════════════════════════
 // PAPER TUNE SIMULATOR
@@ -42,7 +42,7 @@ export function computePaperTune(
     };
   }
 
-  const physics = computePhysics(params, weights);
+  computePhysics(params, weights);
   const dynamicSpine = computeDynamicSpine(
     shaft.spine,
     arrow.shaftLength,

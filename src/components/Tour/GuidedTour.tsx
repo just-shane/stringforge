@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import Joyride, { type CallBackProps, type Step, STATUS, ACTIONS, EVENTS } from "react-joyride";
+import Joyride, { type CallBackProps, type Step, STATUS, ACTIONS } from "react-joyride";
 import { useSimStore } from "../../store.ts";
 import { APP_VERSION } from "../../lib/version.ts";
 
@@ -24,6 +24,7 @@ function markTourCompleted(): void {
   }
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function resetTour(): void {
   try {
     localStorage.removeItem(TOUR_STORAGE_KEY);
@@ -123,34 +124,44 @@ export function GuidedTour({ forceRun, onFinish }: GuidedTourProps) {
   const theme = useSimStore((s) => s.theme);
   const c = theme.colors;
 
-  const [run, setRun] = useState(false);
+  const [autoRun, setAutoRun] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+  const [prevForceRun, setPrevForceRun] = useState(forceRun);
+
+  // Reset dismissed state when forceRun transitions to true (replay)
+  // This is the recommended setState-during-render pattern for derived state
+  if (forceRun && !prevForceRun) {
+    setDismissed(false);
+    setPrevForceRun(forceRun);
+  } else if (forceRun !== prevForceRun) {
+    setPrevForceRun(forceRun);
+  }
+
+  const run = (forceRun || autoRun) && !dismissed;
 
   useEffect(() => {
-    if (forceRun) {
-      setRun(true);
-      return;
-    }
-    // Auto-show for new users or new versions
+    // Auto-show for new users or new versions (only on mount)
     if (!hasTourBeenCompleted()) {
-      // Small delay so the app renders first
-      const timer = setTimeout(() => setRun(true), 800);
+      const timer = setTimeout(() => setAutoRun(true), 800);
       return () => clearTimeout(timer);
     }
-  }, [forceRun]);
+  }, []);
 
   const handleCallback = useCallback(
     (data: CallBackProps) => {
-      const { status, action, type } = data;
+      const { status, action } = data;
 
       if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
-        setRun(false);
+        setDismissed(true);
+        setAutoRun(false);
         markTourCompleted();
         onFinish?.();
       }
 
       // Close on overlay click
       if (action === ACTIONS.CLOSE) {
-        setRun(false);
+        setDismissed(true);
+        setAutoRun(false);
         markTourCompleted();
         onFinish?.();
       }

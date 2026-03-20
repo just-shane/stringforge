@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { useSimStore } from "../../store.ts";
 import { encodeShareLink } from "../../lib/bows.ts";
-import { computePhysics, type PhysicsResult } from "../../lib/physics.ts";
+import type { PhysicsResult } from "../../lib/physics.ts";
 import { computeArrow } from "../../lib/arrow.ts";
 
 interface ShareExportProps {
@@ -13,7 +13,6 @@ export function ShareExport({ physics }: ShareExportProps) {
   const params = useSimStore((s) => s.params);
   const weights = useSimStore((s) => s.weights);
   const arrow = useSimStore((s) => s.arrow);
-  const windSpeed = useSimStore((s) => s.windSpeed);
   const c = theme.colors;
 
   const [copied, setCopied] = useState(false);
@@ -27,9 +26,8 @@ export function ShareExport({ physics }: ShareExportProps) {
         params.drawWeight,
         params.drawLength,
         params.bowType,
-        windSpeed,
       ),
-    [arrow, physics.estimatedFPS, params.drawWeight, params.drawLength, params.bowType, windSpeed],
+    [arrow, physics.estimatedFPS, params.drawWeight, params.drawLength, params.bowType],
   );
 
   const shareUrl = useMemo(

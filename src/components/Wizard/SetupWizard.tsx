@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSimStore } from "../../store.ts";
 import { getWizardRecommendation, type WizardRecommendation } from "../../lib/glossary.ts";
+import type { Theme } from "../../lib/themes.ts";
 
 interface SetupWizardProps {
   onClose: () => void;
@@ -365,7 +366,7 @@ function StatBlock({
 }: {
   label: string;
   value: string;
-  c: any;
+  c: Theme["colors"];
   accent?: boolean;
 }) {
   return (

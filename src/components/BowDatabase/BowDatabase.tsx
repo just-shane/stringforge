@@ -2,13 +2,13 @@ import { useState, useMemo } from "react";
 import { useSimStore } from "../../store.ts";
 import { BOW_DATABASE, ARROW_PRESETS, type BowSpec, type ArrowPreset } from "../../lib/bows.ts";
 import type { BowType } from "../../lib/physics.ts";
+import type { Theme } from "../../lib/themes.ts";
 
 export function BowDatabase() {
   const theme = useSimStore((s) => s.theme);
   const setBowType = useSimStore((s) => s.setBowType);
   const setParam = useSimStore((s) => s.setParam);
   const setArrow = useSimStore((s) => s.setArrow);
-  const params = useSimStore((s) => s.params);
   const c = theme.colors;
 
   const [bowFilter, setBowFilter] = useState<BowType | "all">("all");
@@ -138,7 +138,7 @@ function BowCard({
   isActive,
 }: {
   bow: BowSpec;
-  colors: any;
+  colors: Theme["colors"];
   onApply: () => void;
   isActive: boolean;
 }) {
@@ -220,7 +220,7 @@ function PresetCard({
   onApply,
 }: {
   preset: ArrowPreset;
-  colors: any;
+  colors: Theme["colors"];
   onApply: () => void;
 }) {
   const useColor = preset.use === "hunting" ? c.warn : preset.use === "target" ? c.accent : c.textMuted;
@@ -264,7 +264,7 @@ function PresetCard({
   );
 }
 
-function Stat({ label, value, c }: { label: string; value: string; c: any }) {
+function Stat({ label, value, c }: { label: string; value: string; c: Theme["colors"] }) {
   return (
     <div className="flex justify-between items-center py-0.5">
       <span className="text-[9px] font-mono uppercase" style={{ color: c.textDim }}>

@@ -299,7 +299,6 @@ export function computeArrow(
   drawWeight: number,
   drawLength: number,
   bowType: "compound" | "recurve" | "longbow" | "crossbow",
-  windSpeedMPH: number = 0,
 ): ArrowResult {
   const shaft = ARROW_SHAFTS.find((s) => s.id === components.shaft);
   if (!shaft) throw new Error(`Unknown shaft: ${components.shaft}`);

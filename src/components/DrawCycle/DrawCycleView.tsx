@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useSimStore } from "../../store.ts";
 import { getForceAtDraw } from "../../lib/physics.ts";
-import { computeDrawCycle, type DrawFrame } from "../../lib/audio.ts";
+import { computeDrawCycle } from "../../lib/audio.ts";
 
 export function DrawCycleView() {
   const theme = useSimStore((s) => s.theme);
@@ -67,8 +67,6 @@ export function DrawCycleView() {
   const bowTopY = pad;
   const bowBottomY = H - pad;
   const bowMidY = (bowTopY + bowBottomY) / 2;
-  const ataPixels = bowBottomY - bowTopY;
-
   // Limb deflection
   const limbDeflect = frame.limbDeflection * 1.5; // pixels per degree
   const topLimbTipX = bowCenterX + limbDeflect;

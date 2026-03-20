@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSimStore } from "../../store.ts";
 import {
   loadProfiles,
@@ -19,13 +19,9 @@ export function ProfileManager() {
   const setArrow = useSimStore((s) => s.setArrow);
   const c = theme.colors;
 
-  const [profiles, setProfiles] = useState<SavedProfile[]>([]);
+  const [profiles, setProfiles] = useState<SavedProfile[]>(() => loadProfiles());
   const [newName, setNewName] = useState("");
   const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    setProfiles(loadProfiles());
-  }, []);
 
   function handleSave() {
     if (!newName.trim()) return;

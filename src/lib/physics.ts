@@ -331,8 +331,6 @@ function computeStoredEnergy(
 function computeEnergyBreakdown(
   bowProfile: BowProfile,
   storedEnergy: number,
-  stringMassKg: number,
-  totalWeightMassKg: number,
 ): EnergyBreakdown {
   const efficiency = bowProfile.efficiency;
 
@@ -465,7 +463,7 @@ export function computePhysics(params: SimParams, weights: Weight[]): PhysicsRes
     params.drawLength,
     params.braceHeight,
   );
-  const energy = computeEnergyBreakdown(bowProfile, storedEnergy, totalStringMass, totalWeightMass);
+  const energy = computeEnergyBreakdown(bowProfile, storedEnergy);
 
   // Estimated FPS using energy balance with a reference 350gr arrow
   // v = sqrt(2 × η × E_stored / m_virtual)

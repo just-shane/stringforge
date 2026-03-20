@@ -9,7 +9,7 @@ export function usePhysicsWorker(params: SimParams, weights: Weight[]): PhysicsR
   const workerRef = useRef<Worker | null>(null);
   const idRef = useRef(0);
   const [workerResult, setWorkerResult] = useState<PhysicsResult | null>(null);
-  const [workerReady, setWorkerReady] = useState(false);
+  const workerReadyRef = useRef(false);
 
   // Initialize worker
   useEffect(() => {
@@ -24,21 +24,21 @@ export function usePhysicsWorker(params: SimParams, weights: Weight[]): PhysicsR
       worker.onerror = () => {
         // Worker failed — fall back to main thread
         workerRef.current = null;
-        setWorkerReady(false);
+        workerReadyRef.current = false;
       };
       workerRef.current = worker;
-      setWorkerReady(true);
+      workerReadyRef.current = true;
 
       return () => worker.terminate();
     } catch {
       // Workers not available
-      setWorkerReady(false);
+      workerReadyRef.current = false;
     }
   }, []);
 
   // Post to worker on param changes
   useEffect(() => {
-    if (workerRef.current && workerReady) {
+    if (workerRef.current && workerReadyRef.current) {
       idRef.current++;
       const msg: WorkerRequest = {
         id: idRef.current,
@@ -47,7 +47,7 @@ export function usePhysicsWorker(params: SimParams, weights: Weight[]): PhysicsR
       };
       workerRef.current.postMessage(msg);
     }
-  }, [params, weights, workerReady]);
+  }, [params, weights]);
 
   // Fallback: main-thread computation (used when worker isn't ready or for initial render)
   const mainThreadResult = useMemo(() => computePhysics(params, weights), [params, weights]);

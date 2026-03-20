@@ -1,14 +1,11 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import {
   BOW_DATABASE,
   ARROW_PRESETS,
   createProfile,
-  loadProfiles,
-  saveProfiles,
   deleteProfile,
   encodeShareLink,
   decodeShareLink,
-  type SavedProfile,
 } from "../lib/bows.ts";
 import {
   computeWaterfall,

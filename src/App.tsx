@@ -1,6 +1,5 @@
-import { useMemo, useState, useEffect, useCallback, lazy, Suspense } from "react";
+import { useState, useEffect, useCallback, lazy, Suspense } from "react";
 import { useSimStore } from "./store.ts";
-import { computePhysics } from "./lib/physics.ts";
 import { usePhysicsWorker } from "./lib/usePhysicsWorker.ts";
 import { decodeShareLink } from "./lib/bows.ts";
 import { ThemeProvider } from "./components/Layout/ThemeProvider.tsx";

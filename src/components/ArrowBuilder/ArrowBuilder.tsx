@@ -16,8 +16,8 @@ export function ArrowBuilder({ physics }: ArrowBuilderProps) {
   const setWindSpeed = useSimStore((s) => s.setWindSpeed);
 
   const arrowResult = useMemo(
-    () => computeArrow(arrow, physics.estimatedFPS, params.drawWeight, params.drawLength, params.bowType, windSpeed),
-    [arrow, physics.estimatedFPS, params.drawWeight, params.drawLength, params.bowType, windSpeed],
+    () => computeArrow(arrow, physics.estimatedFPS, params.drawWeight, params.drawLength, params.bowType),
+    [arrow, physics.estimatedFPS, params.drawWeight, params.drawLength, params.bowType],
   );
 
   const currentShaft = ARROW_SHAFTS.find((s) => s.id === arrow.shaft);
