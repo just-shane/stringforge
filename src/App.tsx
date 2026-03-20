@@ -19,9 +19,9 @@ export default function App() {
     <div className="min-h-screen">
       <Header />
 
-      <div className="flex flex-wrap">
+      <div className="flex max-md:flex-col">
         {/* Left Panel: Controls */}
-        <div className="w-72 min-w-72 border-r border-neutral-800 p-5 overflow-y-auto max-h-[calc(100vh-65px)] max-md:w-full max-md:min-w-0 max-md:max-h-[40vh] max-md:border-r-0 max-md:border-b">
+        <div className="w-72 min-w-72 shrink-0 border-r border-neutral-800 p-5 overflow-y-auto max-h-[calc(100vh-65px)] max-md:w-full max-md:min-w-0 max-md:max-h-[40vh] max-md:border-r-0 max-md:border-b">
           <ControlPanel />
         </div>
 
