@@ -249,7 +249,7 @@
 
 ---
 
-## 🔄 Phase 9: StringForge Rebrand (In Progress)
+## ✅ Phase 9: StringForge Rebrand (Complete)
 
 > **Legal requirement:** All Grace/Prime Engineering references must be completely removed before monetization. Grace is highly litigious.
 
@@ -279,25 +279,27 @@
 - [x] **Theme color** — Updated to #3b82f6 (archery blue) in manifest + meta tag
 - [x] **OG image** — 1200x630 social preview card with logo, tagline, feature tags
 
-### 9.3 Deploy to stringforge.io
-- [ ] **Build production bundle** — `npm run build` with production optimizations
-- [ ] **Deploy to hosting** — Upload to stclairhosting.com (domain already pointed)
-- [ ] **HTTPS/SSL** — Ensure SSL certificate is active
-- [ ] **Verify PWA** — Test install prompt, offline mode, service worker on production
+### 9.3 Deploy to stringforge.io ✅
+- [x] **GitHub Actions CI/CD** — Test → Build → Deploy via FTPS on push to main (SamKirkland/FTP-Deploy-Action)
+- [x] **Apache .htaccess** — HTTPS redirect, security headers, Vite-optimized caching, SPA fallback, gzip
+- [x] **DNS** — stringforge.io → 67.222.28.49 (St. Clair Hosting / KnownHost VPS)
+- [x] **HTTPS/SSL** — Let's Encrypt wildcard cert via WHM AutoSSL (*.stringforge.io)
+- [x] **Live site** — https://stringforge.io fully operational
+- [x] **Repo rename** — GitHub repo renamed from `bowstring-sim` → `stringforge`
 
-### 9.4 Analytics & Social
-- [x] **Analytics** — Plausible snippet added (`data-domain="stringforge.io"`)
+### 9.4 Analytics & Social ✅
+- [x] **Analytics** — Plausible via `@plausible-analytics/tracker` NPM package (outbound links, file downloads, form submissions)
 - [x] **Open Graph cards** — OG meta tags + `og-image.png` for link sharing
 - [x] **Twitter cards** — `summary_large_image` meta tags added
-- [ ] **Structured data** — JSON-LD for search engines
+- [x] **Structured data** — JSON-LD WebApplication schema with features, pricing, keywords
 
 ---
 
 ## 🔜 Phase 10: Production Hardening (Next)
 
-### 10.1 Error Monitoring
-- [ ] **Sentry integration** — `@sentry/react` for runtime error tracking in production
-- [ ] **Error boundaries** — React error boundaries on major sections (physics, visualizations, modals)
+### 10.1 Error Monitoring ✅
+- [x] **Sentry integration** — `@sentry/react` initialized in production only with DSN
+- [x] **Error boundary** — `Sentry.ErrorBoundary` wrapping entire app with fallback UI
 - [ ] **Performance monitoring** — Sentry performance tracing for physics computation and render times
 
 ### 10.2 Marketing Push
