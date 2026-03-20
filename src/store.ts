@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import type { Weight, SimParams } from "./lib/physics.ts";
+import type { Weight, SimParams, BowType } from "./lib/physics.ts";
+import { BOW_PROFILES } from "./lib/physics.ts";
 import { getThemeById } from "./lib/themes.ts";
 import type { Theme } from "./lib/themes.ts";
 
@@ -27,6 +28,7 @@ interface SimState {
   menuOpen: boolean;
 
   setParam: <K extends keyof SimParams>(key: K, value: SimParams[K]) => void;
+  setBowType: (bowType: BowType) => void;
   setWeights: (weights: Weight[]) => void;
   updateWeight: (index: number, weight: Weight) => void;
   removeWeight: (index: number) => void;
@@ -38,11 +40,14 @@ interface SimState {
 
 export const useSimStore = create<SimState>((set) => ({
   params: {
+    bowType: "compound",
     stringLength: 57.5,
     strandCount: 24,
     material: "BCY-X",
     tension: 350,
     braceHeight: 7.0,
+    drawWeight: 70,
+    drawLength: 30,
   },
 
   weights: [
@@ -56,6 +61,21 @@ export const useSimStore = create<SimState>((set) => ({
 
   setParam: (key, value) =>
     set((state) => ({ params: { ...state.params, [key]: value } })),
+
+  setBowType: (bowType) =>
+    set((state) => {
+      const profile = BOW_PROFILES[bowType];
+      return {
+        params: {
+          ...state.params,
+          bowType,
+          drawWeight: profile.defaultDrawWeight,
+          drawLength: profile.defaultDrawLength,
+          stringLength: profile.defaultStringLength,
+          braceHeight: profile.defaultBraceHeight,
+        },
+      };
+    }),
 
   setWeights: (weights) => set({ weights }),
 

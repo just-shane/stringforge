@@ -6,11 +6,14 @@ describe("useSimStore", () => {
     // Reset store to defaults
     useSimStore.setState({
       params: {
+        bowType: "compound",
         stringLength: 57.5,
         strandCount: 24,
         material: "BCY-X",
         tension: 350,
         braceHeight: 7.0,
+        drawWeight: 70,
+        drawLength: 30,
       },
       weights: [
         { position: 25, mass: 15, type: "brass" },
@@ -25,13 +28,24 @@ describe("useSimStore", () => {
     expect(params.stringLength).toBe(57.5);
     expect(params.material).toBe("BCY-X");
     expect(params.tension).toBe(350);
+    expect(params.bowType).toBe("compound");
+    expect(params.drawWeight).toBe(70);
+    expect(params.drawLength).toBe(30);
   });
 
   it("setParam updates a single param", () => {
     useSimStore.getState().setParam("tension", 500);
     expect(useSimStore.getState().params.tension).toBe(500);
-    // Other params unchanged
     expect(useSimStore.getState().params.stringLength).toBe(57.5);
+  });
+
+  it("setBowType updates bow type and applies defaults", () => {
+    useSimStore.getState().setBowType("recurve");
+    const { params } = useSimStore.getState();
+    expect(params.bowType).toBe("recurve");
+    expect(params.drawWeight).toBe(40);
+    expect(params.drawLength).toBe(28);
+    expect(params.stringLength).toBe(66);
   });
 
   it("addWeight appends a weight", () => {

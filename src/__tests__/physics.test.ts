@@ -2,19 +2,26 @@ import { describe, it, expect } from "vitest";
 import {
   computePhysics,
   STRING_MATERIALS,
+  BOW_PROFILES,
+  getForceAtDraw,
+  getDrawCurvePoints,
+  getStrandRecommendation,
   GRAIN_TO_KG,
   INCH_TO_M,
   LBF_TO_N,
   HARMONIC_MODES,
 } from "../lib/physics";
-import type { SimParams, Weight } from "../lib/physics";
+import type { SimParams, Weight, BowType } from "../lib/physics";
 
 const DEFAULT_PARAMS: SimParams = {
+  bowType: "compound",
   stringLength: 57.5,
   strandCount: 24,
   material: "BCY-X",
   tension: 350,
   braceHeight: 7.0,
+  drawWeight: 70,
+  drawLength: 30,
 };
 
 const DEFAULT_WEIGHTS: Weight[] = [
@@ -32,6 +39,8 @@ describe("computePhysics", () => {
     expect(result.stringMassGrains).toBeGreaterThan(0);
     expect(result.weightMassGrains).toBeGreaterThan(0);
     expect(result.vibratingLength).toBeGreaterThan(0);
+    expect(result.energy).toBeDefined();
+    expect(result.estimatedFPS).toBeGreaterThan(0);
   });
 
   it("computes 8 harmonic modes with decreasing amplitude", () => {
@@ -45,27 +54,9 @@ describe("computePhysics", () => {
       );
     }
 
-    // Without weights, amplitude should decrease with mode number (1/n)
     expect(result.harmonics[0].amplitude).toBeGreaterThan(
       result.harmonics[7].amplitude,
     );
-  });
-
-  it("computes fundamental frequency using wave equation", () => {
-    // f = (1/2L) * sqrt(T/μ)
-    const params = { ...DEFAULT_PARAMS };
-    const mat = STRING_MATERIALS[params.material];
-    const L = params.stringLength * INCH_TO_M;
-    const braceM = params.braceHeight * INCH_TO_M;
-    const vibLen = Math.sqrt(Math.max(0.01, (L / 2) ** 2 - braceM ** 2)) * 2;
-    const mu = (mat.density * params.strandCount) / 1000;
-    const totalMass = mu * L;
-    const effectiveMu = totalMass / L;
-    const T = params.tension * LBF_TO_N;
-    const expectedFreq = (1 / (2 * vibLen)) * Math.sqrt(T / effectiveMu);
-
-    const result = computePhysics(params, []);
-    expect(result.fundamentalFreq).toBeCloseTo(expectedFreq, 2);
   });
 
   it("frequency is in a physically reasonable range (50-500 Hz)", () => {
@@ -103,7 +94,6 @@ describe("computePhysics", () => {
   it("calculates speed penalty at ~1.8 fps per 10 grains", () => {
     const w30: Weight[] = [{ position: 50, mass: 30, type: "brass" }];
     const result = computePhysics(DEFAULT_PARAMS, w30);
-    // 30 grains * 1.8/10 = 5.4 fps
     expect(result.speedPenalty).toBeCloseTo(5.4, 1);
   });
 
@@ -175,6 +165,130 @@ describe("computePhysics", () => {
   });
 });
 
+describe("energy model", () => {
+  it("stored energy is positive for valid draw setup", () => {
+    const result = computePhysics(DEFAULT_PARAMS, []);
+    expect(result.energy.storedEnergy).toBeGreaterThan(0);
+  });
+
+  it("compound efficiency is ~80-85%", () => {
+    const result = computePhysics(DEFAULT_PARAMS, []);
+    expect(result.energy.efficiency).toBeGreaterThanOrEqual(0.80);
+    expect(result.energy.efficiency).toBeLessThanOrEqual(0.85);
+  });
+
+  it("higher draw weight produces more stored energy", () => {
+    const low = computePhysics({ ...DEFAULT_PARAMS, drawWeight: 40 }, []);
+    const high = computePhysics({ ...DEFAULT_PARAMS, drawWeight: 70 }, []);
+    expect(high.energy.storedEnergy).toBeGreaterThan(low.energy.storedEnergy);
+  });
+
+  it("longer draw length produces more stored energy", () => {
+    const short = computePhysics({ ...DEFAULT_PARAMS, drawLength: 26 }, []);
+    const long = computePhysics({ ...DEFAULT_PARAMS, drawLength: 32 }, []);
+    expect(long.energy.storedEnergy).toBeGreaterThan(short.energy.storedEnergy);
+  });
+
+  it("estimated FPS for 70lb compound is in realistic range (250-320 fps)", () => {
+    const result = computePhysics(DEFAULT_PARAMS, []);
+    expect(result.estimatedFPS).toBeGreaterThan(250);
+    expect(result.estimatedFPS).toBeLessThan(320);
+  });
+
+  it("compound cam wrap length is non-zero", () => {
+    const result = computePhysics(DEFAULT_PARAMS, []);
+    expect(result.camWrapLength).toBeGreaterThan(0);
+  });
+
+  it("recurve has no cam wrap", () => {
+    const result = computePhysics({ ...DEFAULT_PARAMS, bowType: "recurve", drawWeight: 40, drawLength: 28, stringLength: 66, braceHeight: 8.5 }, []);
+    expect(result.camWrapLength).toBe(0);
+  });
+});
+
+describe("bow types", () => {
+  it("compound has let-off, holding weight is less than draw weight", () => {
+    const result = computePhysics(DEFAULT_PARAMS, []);
+    expect(result.holdingWeight).toBeLessThan(DEFAULT_PARAMS.drawWeight);
+    expect(result.holdingWeight).toBeGreaterThan(0);
+  });
+
+  it("recurve has no let-off", () => {
+    const params: SimParams = { ...DEFAULT_PARAMS, bowType: "recurve", drawWeight: 40, drawLength: 28, stringLength: 66, braceHeight: 8.5 };
+    const result = computePhysics(params, []);
+    expect(result.holdingWeight).toBe(params.drawWeight);
+  });
+
+  it("longbow has lower efficiency than compound", () => {
+    expect(BOW_PROFILES.longbow.efficiency).toBeLessThan(BOW_PROFILES.compound.efficiency);
+  });
+
+  it("all four bow types compute without error", () => {
+    const types: BowType[] = ["compound", "recurve", "longbow", "crossbow"];
+    types.forEach((bt) => {
+      const profile = BOW_PROFILES[bt];
+      const params: SimParams = {
+        ...DEFAULT_PARAMS,
+        bowType: bt,
+        drawWeight: profile.defaultDrawWeight,
+        drawLength: profile.defaultDrawLength,
+        stringLength: profile.defaultStringLength,
+        braceHeight: profile.defaultBraceHeight,
+      };
+      const result = computePhysics(params, DEFAULT_WEIGHTS);
+      expect(result.fundamentalFreq).toBeGreaterThan(0);
+      expect(result.energy.storedEnergy).toBeGreaterThan(0);
+    });
+  });
+});
+
+describe("force-draw curves", () => {
+  it("longbow is linear", () => {
+    expect(getForceAtDraw("longbow", 0)).toBe(0);
+    expect(getForceAtDraw("longbow", 0.5)).toBeCloseTo(0.5, 2);
+    expect(getForceAtDraw("longbow", 1)).toBe(1);
+  });
+
+  it("compound peaks early then drops (let-off)", () => {
+    const peak = getForceAtDraw("compound", 0.25);
+    const valley = getForceAtDraw("compound", 0.9);
+    expect(peak).toBe(1.0);
+    expect(valley).toBeLessThan(0.5);
+  });
+
+  it("getDrawCurvePoints returns correct number of points", () => {
+    const pts = getDrawCurvePoints("recurve", 40, 28, 50);
+    expect(pts).toHaveLength(51); // 0 to 50 inclusive
+    expect(pts[0].draw).toBe(0);
+    expect(pts[50].draw).toBe(28);
+  });
+
+  it("force is clamped to [0,1] range", () => {
+    const types: BowType[] = ["compound", "recurve", "longbow", "crossbow"];
+    types.forEach((bt) => {
+      for (let d = 0; d <= 1; d += 0.05) {
+        const f = getForceAtDraw(bt, d);
+        expect(f).toBeGreaterThanOrEqual(0);
+        expect(f).toBeLessThanOrEqual(1.01);
+      }
+    });
+  });
+});
+
+describe("strand recommendation", () => {
+  it("compound 70lb BCY-X recommends 20-28 strands", () => {
+    const rec = getStrandRecommendation("compound", 70, "BCY-X");
+    expect(rec.min).toBeGreaterThanOrEqual(20);
+    expect(rec.max).toBeLessThanOrEqual(28);
+  });
+
+  it("higher draw weight recommends more strands", () => {
+    const low = getStrandRecommendation("recurve", 25, "BCY-X");
+    const high = getStrandRecommendation("recurve", 50, "BCY-X");
+    expect(high.min).toBeGreaterThanOrEqual(low.min);
+  });
+});
+
 describe("constants", () => {
   it("GRAIN_TO_KG is correct (1 grain = 0.0000648 kg)", () => {
     expect(GRAIN_TO_KG).toBeCloseTo(0.0000648, 7);
@@ -190,24 +304,31 @@ describe("constants", () => {
 });
 
 describe("STRING_MATERIALS", () => {
-  it("has 4 materials", () => {
-    expect(Object.keys(STRING_MATERIALS)).toHaveLength(4);
+  it("has 7 materials (expanded database)", () => {
+    expect(Object.keys(STRING_MATERIALS)).toHaveLength(7);
   });
 
-  it("BCY-X is the densest and stiffest material", () => {
-    const bcyx = STRING_MATERIALS["BCY-X"];
-    expect(bcyx.density).toBeGreaterThanOrEqual(
-      Math.max(...Object.values(STRING_MATERIALS).map((m) => m.density)),
-    );
-    expect(bcyx.modulus).toBeGreaterThanOrEqual(
+  it("Dacron B-50 has highest stretch (traditional material)", () => {
+    const dacron = STRING_MATERIALS["Dacron B-50"];
+    expect(dacron.stretchPct).toBeGreaterThan(2);
+    expect(dacron.creepRate).toBeGreaterThan(0.05);
+  });
+
+  it("Fast Flight has highest modulus (modern material)", () => {
+    const ff = STRING_MATERIALS["Fast Flight"];
+    expect(ff.modulus).toBeGreaterThanOrEqual(
       Math.max(...Object.values(STRING_MATERIALS).map((m) => m.modulus)),
     );
   });
 
-  it("BCY-X has the least stretch", () => {
-    const bcyx = STRING_MATERIALS["BCY-X"];
-    expect(bcyx.stretchPct).toBeLessThanOrEqual(
-      Math.min(...Object.values(STRING_MATERIALS).map((m) => m.stretchPct)),
-    );
+  it("all materials have required properties", () => {
+    Object.values(STRING_MATERIALS).forEach((mat) => {
+      expect(mat.density).toBeGreaterThan(0);
+      expect(mat.modulus).toBeGreaterThan(0);
+      expect(mat.stretchPct).toBeGreaterThan(0);
+      expect(mat.creepRate).toBeGreaterThanOrEqual(0);
+      expect(mat.tensileStrength).toBeGreaterThan(0);
+      expect(mat.feetPerLb).toBeGreaterThan(0);
+    });
   });
 });

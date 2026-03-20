@@ -48,10 +48,22 @@ export function StatsBar({ physics }: StatsBarProps) {
   return (
     <div className="flex gap-2 mb-4 flex-wrap">
       <Stat
+        label="Est. Speed"
+        value={physics.estimatedFPS.toFixed(0)}
+        unit="fps"
+        colorVar="var(--c-accent)"
+        sub={`@350gr arrow · ${physics.energy.efficiency * 100}% eff.`}
+      />
+      <Stat
+        label="Stored Energy"
+        value={physics.energy.storedEnergy.toFixed(1)}
+        unit="ft-lbs"
+        sub={`Arrow KE: ${physics.energy.arrowKE.toFixed(1)} ft-lbs`}
+      />
+      <Stat
         label="Fundamental"
         value={physics.fundamentalFreq.toFixed(1)}
         unit="Hz"
-        colorVar="var(--c-accent)"
       />
       <Stat
         label="Total Mass"

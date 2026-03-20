@@ -8,6 +8,8 @@ import { StatsBar } from "./components/StatsBar/StatsBar.tsx";
 import { StringVisualizer } from "./components/StringVisualizer/StringVisualizer.tsx";
 import { CrossSectionView } from "./components/CrossSectionView/CrossSectionView.tsx";
 import { HarmonicSpectrum } from "./components/HarmonicSpectrum/HarmonicSpectrum.tsx";
+import { DrawCurve } from "./components/DrawCurve/DrawCurve.tsx";
+import { EnergyBreakdown } from "./components/EnergyBreakdown/EnergyBreakdown.tsx";
 import { PlacementGuide } from "./components/Layout/PlacementGuide.tsx";
 
 export default function App() {
@@ -40,6 +42,31 @@ export default function App() {
 
             <div className="mb-4">
               <CrossSectionView />
+            </div>
+
+            <div className="flex gap-3 flex-wrap mb-4">
+              <div className="flex-1 min-w-70">
+                <span
+                  className="text-[11px] font-mono tracking-[2px] uppercase"
+                  style={{ color: "var(--c-accent)" }}
+                >
+                  Force-Draw Curve
+                </span>
+                <div className="mt-2">
+                  <DrawCurve physics={physics} />
+                </div>
+              </div>
+              <div className="flex-1 min-w-70">
+                <span
+                  className="text-[11px] font-mono tracking-[2px] uppercase"
+                  style={{ color: "var(--c-accent)" }}
+                >
+                  Energy Breakdown
+                </span>
+                <div className="mt-2">
+                  <EnergyBreakdown physics={physics} />
+                </div>
+              </div>
             </div>
 
             <div className="flex gap-3 flex-wrap">
