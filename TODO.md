@@ -271,12 +271,13 @@
 - [x] **E2E tests** — Updated title, app name, version assertions
 - [x] **Screenshot script** — Updated localStorage keys
 
-### 9.2 Logo & Favicon
-- [ ] **StringForge SVG logo** — Bowstring/arrow motif with forge/spark theme
-- [ ] **Favicon** — Update `public/favicon.svg` with StringForge icon
-- [ ] **PWA icons** — Generate 192px and 512px PNG icons
-- [ ] **Apple touch icon** — iOS home screen icon
-- [ ] **Theme color** — Consider #3b82f6 (archery blue) for manifest
+### 9.2 Logo & Favicon ✅
+- [x] **StringForge SVG logo** — Drawn bow with arrow, blue gradient limb, forge sparks at tip, dark background
+- [x] **Favicon** — Updated `public/favicon.svg` with StringForge bow & arrow icon
+- [x] **PWA icons** — Generated 192px and 512px PNG icons via Playwright render
+- [x] **Apple touch icon** — 180px PNG for iOS home screen
+- [x] **Theme color** — Updated to #3b82f6 (archery blue) in manifest + meta tag
+- [x] **OG image** — 1200x630 social preview card with logo, tagline, feature tags
 
 ### 9.3 Deploy to stringforge.io
 - [ ] **Build production bundle** — `npm run build` with production optimizations
@@ -285,9 +286,9 @@
 - [ ] **Verify PWA** — Test install prompt, offline mode, service worker on production
 
 ### 9.4 Analytics & Social
-- [ ] **Analytics** — Add Plausible or GA4 snippet (privacy-friendly)
-- [ ] **Open Graph cards** — Social preview images for link sharing
-- [ ] **Twitter cards** — Meta tags for archery community sharing
+- [x] **Analytics** — Plausible snippet added (`data-domain="stringforge.io"`)
+- [x] **Open Graph cards** — OG meta tags + `og-image.png` for link sharing
+- [x] **Twitter cards** — `summary_large_image` meta tags added
 - [ ] **Structured data** — JSON-LD for search engines
 
 ---
