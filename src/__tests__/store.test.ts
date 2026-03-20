@@ -8,7 +8,7 @@ describe("useSimStore", () => {
       params: {
         bowType: "compound",
         stringLength: 57.5,
-        strandCount: 24,
+        strandCount: 28,
         material: "BCY-X",
         tension: 350,
         braceHeight: 7.0,
