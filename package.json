@@ -18,6 +18,7 @@
     "test:all": "vitest run && playwright test --grep-invert @visual"
   },
   "dependencies": {
+    "@plausible-analytics/tracker": "^0.4.4",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-joyride": "^2.9.3",
