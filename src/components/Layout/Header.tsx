@@ -21,7 +21,7 @@ export function Header() {
             color: "#000",
           }}
         >
-          G5
+          SF
         </div>
         <div>
           <div className="text-base font-bold tracking-tight" style={{ color: "var(--c-text)" }}>
@@ -73,9 +73,9 @@ export function Header() {
           className="text-[9px] font-mono text-right leading-relaxed max-sm:hidden"
           style={{ color: "var(--c-text-faint)" }}
         >
-          PRIME ARCHERY DIV
+          STRINGFORGE.IO
           <br />
-          GRACE ENGINEERING
+          EST. 2026
         </div>
         <div data-tour="theme-menu">
           <HamburgerMenu />

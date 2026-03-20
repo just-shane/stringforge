@@ -56,8 +56,8 @@ export function ShareExport({ physics }: ShareExportProps) {
   const reportText = useMemo(() => {
     const lines = [
       "╔══════════════════════════════════════════════════════╗",
-      "║       BOWSTRING DYNAMICS — SETUP REPORT             ║",
-      "║       Grace / Prime Engineering                     ║",
+      "║       STRINGFORGE — SETUP REPORT                    ║",
+      "║       stringforge.io                                ║",
       "╚══════════════════════════════════════════════════════╝",
       "",
       `Generated: ${new Date().toLocaleString()}`,
@@ -107,8 +107,8 @@ export function ShareExport({ physics }: ShareExportProps) {
       `  Balance Point: ${physics.balancePoint.toFixed(1)}%`,
       "",
       "═══════════════════════════════════════════════════════",
-      "  Bowstring Dynamics Simulator v2.0",
-      "  Grace / Prime Engineering",
+      "  StringForge — Bowstring Dynamics Simulator v4.0",
+      "  stringforge.io",
     ];
     return lines.join("\n");
   }, [params, weights, physics, arrowResult]);

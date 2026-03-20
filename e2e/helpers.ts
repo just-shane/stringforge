@@ -6,7 +6,8 @@ import type { Page } from "@playwright/test";
  */
 export async function dismissTour(page: Page) {
   await page.addInitScript(() => {
-    localStorage.setItem("bowstring-tour-seen", "99.0.0");
+    localStorage.setItem("stringforge-tour-completed", "true");
+    localStorage.setItem("stringforge-tour-version", "4.0.0");
     // Inject a MutationObserver to nuke the joyride portal as soon as it appears
     const observer = new MutationObserver(() => {
       const portal = document.getElementById("react-joyride-portal");
@@ -30,7 +31,7 @@ export async function dismissTour(page: Page) {
  */
 export async function setTheme(page: Page, themeId: string) {
   await page.addInitScript((id) => {
-    localStorage.setItem("bowstring-theme", id);
+    localStorage.setItem("stringforge-theme", id);
   }, themeId);
 }
 

@@ -43,7 +43,7 @@ export function DocsPanel({ onClose }: DocsPanelProps) {
               Documentation
             </h2>
             <p className="text-[11px] font-mono mt-0.5" style={{ color: c.textDim }}>
-              Physics reference for Bowstring Dynamics Simulator
+              Physics reference for StringForge
             </p>
           </div>
 
@@ -195,7 +195,7 @@ export function DocsPanel({ onClose }: DocsPanelProps) {
             {DOCS.length} topics · {DOC_CATEGORIES.length} categories
           </span>
           <span className="text-[9px] font-mono" style={{ color: c.textFaint }}>
-            Grace / Prime Engineering — Bowstring Dynamics
+            © 2026 StringForge.io
           </span>
         </div>
       </div>

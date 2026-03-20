@@ -1,4 +1,4 @@
-# Bowstring Dynamics Simulator — Roadmap
+# StringForge — Roadmap
 
 ---
 
@@ -249,22 +249,66 @@
 
 ---
 
-## 🔜 Phase 9: Production Readiness (Next)
+## 🔄 Phase 9: StringForge Rebrand (In Progress)
 
-### 9.1 Error Monitoring
+> **Legal requirement:** All Grace/Prime Engineering references must be completely removed before monetization. Grace is highly litigious.
+
+### 9.1 Codebase Rebrand
+- [x] **App identity** — APP_NAME → "StringForge", APP_SUBTITLE → "Bowstring Dynamics Simulator", version → 4.0.0
+- [x] **Header** — Removed "G5" logo and "PRIME ARCHERY DIV / GRACE ENGINEERING" text, replaced with "SF" + "STRINGFORGE.IO / EST. 2026"
+- [x] **HTML meta** — Title, description, apple-mobile-web-app-title updated to StringForge branding
+- [x] **manifest.json** — App name, short name, description rebranded
+- [x] **Service worker** — Cache name updated to `stringforge-v4`
+- [x] **package.json** — Name → "stringforge", version → 4.0.0
+- [x] **Export reports** — Setup report header/footer rebranded to StringForge
+- [x] **Panel footers** — Glossary, Docs footers updated to "© 2026 StringForge.io"
+- [x] **Guided tour** — Welcome text rebranded
+- [x] **Hamburger menu** — Footer text updated
+- [x] **Bow database** — Removed "G5" from Prime manufacturer, removed "our house bow" reference
+- [x] **localStorage keys** — All keys renamed from `bowstring-*` to `stringforge-*`
+- [x] **Persist module** — State key updated to `stringforge-state`
+- [x] **Unit tests** — Updated assertions for new app name, version, localStorage keys
+- [x] **E2E tests** — Updated title, app name, version assertions
+- [x] **Screenshot script** — Updated localStorage keys
+
+### 9.2 Logo & Favicon
+- [ ] **StringForge SVG logo** — Bowstring/arrow motif with forge/spark theme
+- [ ] **Favicon** — Update `public/favicon.svg` with StringForge icon
+- [ ] **PWA icons** — Generate 192px and 512px PNG icons
+- [ ] **Apple touch icon** — iOS home screen icon
+- [ ] **Theme color** — Consider #3b82f6 (archery blue) for manifest
+
+### 9.3 Deploy to stringforge.io
+- [ ] **Build production bundle** — `npm run build` with production optimizations
+- [ ] **Deploy to hosting** — Upload to stclairhosting.com (domain already pointed)
+- [ ] **HTTPS/SSL** — Ensure SSL certificate is active
+- [ ] **Verify PWA** — Test install prompt, offline mode, service worker on production
+
+### 9.4 Analytics & Social
+- [ ] **Analytics** — Add Plausible or GA4 snippet (privacy-friendly)
+- [ ] **Open Graph cards** — Social preview images for link sharing
+- [ ] **Twitter cards** — Meta tags for archery community sharing
+- [ ] **Structured data** — JSON-LD for search engines
+
+---
+
+## 🔜 Phase 10: Production Hardening (Next)
+
+### 10.1 Error Monitoring
 - [ ] **Sentry integration** — `@sentry/react` for runtime error tracking in production
 - [ ] **Error boundaries** — React error boundaries on major sections (physics, visualizations, modals)
 - [ ] **Performance monitoring** — Sentry performance tracing for physics computation and render times
 
-### 9.2 Production Deployment
-- [ ] **Deploy to Vercel/Netlify** — Production URL with HTTPS
-- [ ] **Open Graph + Twitter cards** — Social preview images for link sharing
-- [ ] **Custom domain** — bowstringdynamics.com or similar
+### 10.2 Marketing Push
+- [ ] **Reddit launch** — r/archery, r/bowhunting, r/CompoundBow with demo link
+- [ ] **ArcheryTalk forum** — Post in DIY/Technical section
+- [ ] **YouTube demo** — Screen recording walkthrough for archers
+- [ ] **SEO content** — Landing page copy, blog posts on archery physics
 
-### 9.3 Synthetic Monitoring (Post-Deploy)
-- [ ] **Checkly integration** — Playwright-based checks on production URL (revisit once deployed)
-- [ ] **Uptime monitoring** — Alert on production downtime
-- [ ] **Performance budgets** — Lighthouse CI score thresholds in CI pipeline
+### 10.3 Monetization Prep
+- [ ] **Ko-fi / Patreon** — Donation link in app footer
+- [ ] **Premium features** — Save configs, export PDF, advanced tuning presets (gated)
+- [ ] **Stripe integration** — Payment processing for premium tier
 
 ---
 

@@ -146,7 +146,7 @@ export function HamburgerMenu() {
               borderTop: `1px solid var(--c-border)`,
             }}
           >
-            v{APP_VERSION} — Bowstring Dynamics
+            v{APP_VERSION} — StringForge
           </div>
         </div>
       )}

@@ -90,7 +90,7 @@ export const BOW_DATABASE: BowSpec[] = [
   {
     id: "prime-revex-2",
     name: "Revex 2",
-    manufacturer: "Prime / G5",
+    manufacturer: "Prime",
     bowType: "compound",
     ataLength: 33,
     braceHeight: 6.5,
@@ -101,7 +101,7 @@ export const BOW_DATABASE: BowSpec[] = [
     camType: "hybrid",
     stringLength: 57.25,
     weight: 4.3,
-    description: "Roto-cam with inline technology — our house bow",
+    description: "Roto-cam with inline technology",
   },
   {
     id: "elite-envision",

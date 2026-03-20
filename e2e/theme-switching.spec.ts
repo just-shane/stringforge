@@ -60,7 +60,7 @@ test.describe("Theme switching", () => {
       page.on("pageerror", (err) => errors.push(err.message));
 
       // App should render without crashing
-      await expect(page.locator("text=Bowstring Dynamics").first()).toBeVisible();
+      await expect(page.locator("text=StringForge").first()).toBeVisible();
       expect(errors).toHaveLength(0);
     }
   });

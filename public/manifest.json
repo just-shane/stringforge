@@ -1,7 +1,7 @@
 {
-  "name": "Bowstring Dynamics Simulator",
-  "short_name": "Bowstring Sim",
-  "description": "Bowstring physics simulator for archery — speed weights, harmonics, arrow dynamics, and tuning tools.",
+  "name": "StringForge — Bowstring Dynamics Simulator",
+  "short_name": "StringForge",
+  "description": "Archery bowstring & arrow physics simulator — speed weights, harmonics, arrow dynamics, and tuning tools.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0c0e14",

@@ -3,8 +3,8 @@ import Joyride, { type CallBackProps, type Step, STATUS, ACTIONS } from "react-j
 import { useSimStore } from "../../store.ts";
 import { APP_VERSION } from "../../lib/version.ts";
 
-const TOUR_STORAGE_KEY = "bowstring-tour-completed";
-const TOUR_VERSION_KEY = "bowstring-tour-version";
+const TOUR_STORAGE_KEY = "stringforge-tour-completed";
+const TOUR_VERSION_KEY = "stringforge-tour-version";
 
 function hasTourBeenCompleted(): boolean {
   try {
@@ -38,7 +38,7 @@ const STEPS: Step[] = [
   {
     target: "[data-tour='header']",
     content:
-      "Welcome to the Bowstring Dynamics Simulator! This tool models bowstring physics, arrow flight, and tuning — built for engineers and archers alike. Let's take a quick tour.",
+      "Welcome to StringForge! This tool models bowstring physics, arrow flight, and tuning — built for archers and bow technicians. Let's take a quick tour.",
     placement: "bottom",
     disableBeacon: true,
     title: "Welcome",

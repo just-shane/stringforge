@@ -9,12 +9,12 @@ test.describe("App loads and core layout", () => {
   });
 
   test("page title is correct", async ({ page }) => {
-    await expect(page).toHaveTitle("Bowstring Dynamics Simulator");
+    await expect(page).toHaveTitle("StringForge — Archery Bowstring & Arrow Physics Simulator");
   });
 
   test("header renders app name and version", async ({ page }) => {
-    await expect(page.locator("text=Bowstring Dynamics").first()).toBeVisible();
-    await expect(page.locator("text=v3.1.0")).toBeVisible();
+    await expect(page.locator("text=StringForge").first()).toBeVisible();
+    await expect(page.locator("text=v4.0.0")).toBeVisible();
   });
 
   test("all 5 tabs are visible", async ({ page }) => {

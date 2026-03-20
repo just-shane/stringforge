@@ -1,13 +1,16 @@
-# 🏹 Bowstring Dynamics Simulator
+# 🏹 StringForge
 
-### Real-time archery physics. In your browser. No excuses.
+### Archery bowstring & arrow physics simulator. In your browser. No excuses.
+
+> **Live at:** [https://stringforge.io](https://stringforge.io)
+> For archers, bowyers, and technicians who want to see the physics in real time.
 
 <p align="center">
-  <img src="docs/screenshots/hero-main.png" alt="Bowstring Dynamics — main dashboard with string visualizer, stats bar, and control panel" width="100%" />
+  <img src="docs/screenshots/hero-main.png" alt="StringForge — main dashboard with string visualizer, stats bar, and control panel" width="100%" />
 </p>
 
 <p align="center">
-  <strong>v3.1.0</strong> &nbsp;·&nbsp; React 19 + TypeScript &nbsp;·&nbsp; Vite &nbsp;·&nbsp; Zustand &nbsp;·&nbsp; Tailwind v4<br/>
+  <strong>v4.0.0</strong> &nbsp;·&nbsp; React 19 + TypeScript &nbsp;·&nbsp; Vite &nbsp;·&nbsp; Zustand &nbsp;·&nbsp; Tailwind v4<br/>
   <em>181 tests passing &nbsp;·&nbsp; PWA installable &nbsp;·&nbsp; Works offline</em>
 </p>
 
@@ -15,11 +18,9 @@
 
 ## What Is This?
 
-Bowstring Dynamics is a browser-based physics simulator built for archers, bow techs, and engineers who want to **see** what's actually happening when they change string materials, add speed weights, swap arrow shafts, or adjust nock height.
+StringForge is a browser-based physics simulator built for archers, bow techs, and bowyers who want to **see** what's actually happening when they change string materials, add speed weights, swap arrow shafts, or adjust nock height.
 
 Every slider you move recalculates the full physics pipeline in real time — string vibration modes, arrow velocity, energy distribution, ballistic trajectory, noise levels — rendered in crisp SVG with zero plugins.
-
-Built by [Grace/Prime Engineering](https://github.com/just-shane) to support our competitive archery R&D workflow.
 
 ---
 
@@ -32,6 +33,7 @@ Built by [Grace/Prime Engineering](https://github.com/just-shane) to support our
 | 🏹 **15 Arrow Shafts** | Full builder: shaft + point + nock + fletching + wrap → FOC & dynamic spine |
 | ⚖️ **8 Speed Weights** | Brass & tungsten, drag-to-position, see exact fps tradeoff |
 | 📊 **15 Bow Database** | Mathews, Hoyt, Bowtech, PSE, Prime, Elite, Bear, Win&Win + more |
+
 | 🎨 **7 Themes** | Midnight, Neon, Dracula, Nord, Monokai, Catppuccin, High Contrast |
 
 ---
@@ -128,7 +130,7 @@ All 7 themes swap instantly via CSS custom properties. No reload.
 - **Whisper Quiet badge** — earn it by getting noise below threshold
 
 ### 🗄️ Database & Profiles
-- **15-bow database** — specs from Mathews, Hoyt, Bowtech, PSE, Prime, Elite, Bear, Win&Win, Gillo, Howard Hill, TenPoint, Ravin
+- **15-bow database** — specs from Mathews, Hoyt, Bowtech, PSE, Elite, Bear, Win&Win, Gillo, Howard Hill, TenPoint, Ravin + more
 - **6 arrow presets** — Hunting Heavy, Hunting Standard, Hunting Light, Outdoor Target, Indoor Target, 3D
 - **Save/load profiles** — snapshot your entire setup to localStorage
 - **Share links** — base64-encoded URL shares your full config in one click
@@ -169,8 +171,8 @@ All 7 themes swap instantly via CSS custom properties. No reload.
 ## 🚀 Quick Start
 
 ```bash
-git clone https://github.com/just-shane/bowstring-sim.git
-cd bowstring-sim
+git clone https://github.com/stringforge/stringforge.git
+cd stringforge
 npm install
 npm run dev
 ```
@@ -258,6 +260,6 @@ MIT — do what you want, just don't claim you invented bowstring physics.
 ---
 
 <p align="center">
-  <strong>Built with 🏹 by Grace/Prime Engineering</strong><br/>
+  <strong>Built with 🏹 by StringForge.io</strong><br/>
   <em>Because if you can't measure it, you can't tune it.</em>
 </p>

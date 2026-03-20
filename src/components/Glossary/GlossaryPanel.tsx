@@ -226,7 +226,7 @@ export function GlossaryPanel({ onClose }: GlossaryPanelProps) {
             {filteredTerms.length} terms shown
           </span>
           <span className="text-[9px] font-mono" style={{ color: c.textFaint }}>
-            Grace / Prime Engineering
+            © 2026 StringForge.io
           </span>
         </div>
       </div>

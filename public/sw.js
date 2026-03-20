@@ -1,5 +1,5 @@
 // ─── Service Worker for offline support ─────────────────────────
-const CACHE_NAME = "bowstring-sim-v3";
+const CACHE_NAME = "stringforge-v4";
 const PRECACHE_URLS = ["/", "/index.html"];
 
 // Install: precache shell

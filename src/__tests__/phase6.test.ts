@@ -33,8 +33,8 @@ describe("Bow Database", () => {
     expect(types.has("crossbow")).toBe(true);
   });
 
-  it("includes Prime/G5 bow (our house bow)", () => {
-    const prime = BOW_DATABASE.find((b) => b.manufacturer.includes("Prime") || b.manufacturer.includes("G5"));
+  it("includes Prime bow", () => {
+    const prime = BOW_DATABASE.find((b) => b.manufacturer.includes("Prime"));
     expect(prime).toBeDefined();
     expect(prime!.bowType).toBe("compound");
   });

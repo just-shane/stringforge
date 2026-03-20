@@ -11,14 +11,13 @@ describe("Version", () => {
   });
 
   it("exports app name and subtitle", () => {
-    expect(APP_NAME).toBe("Bowstring Dynamics");
+    expect(APP_NAME).toBe("StringForge");
     expect(APP_SUBTITLE).toBeTruthy();
   });
 
-  it("version is 3.1.x or higher", () => {
-    const [major, minor] = APP_VERSION.split(".").map(Number);
-    expect(major).toBeGreaterThanOrEqual(3);
-    if (major === 3) expect(minor).toBeGreaterThanOrEqual(1);
+  it("version is 4.0.x or higher", () => {
+    const [major] = APP_VERSION.split(".").map(Number);
+    expect(major).toBeGreaterThanOrEqual(4);
   });
 });
 
@@ -110,12 +109,12 @@ describe("State Persistence", () => {
   });
 
   it("handles corrupted data gracefully", () => {
-    localStorage.setItem("bowstring-sim-state", "not json");
+    localStorage.setItem("stringforge-state", "not json");
     expect(loadPersistedState()).toBeNull();
   });
 
   it("handles missing fields gracefully", () => {
-    localStorage.setItem("bowstring-sim-state", JSON.stringify({ params: null }));
+    localStorage.setItem("stringforge-state", JSON.stringify({ params: null }));
     expect(loadPersistedState()).toBeNull();
   });
 });

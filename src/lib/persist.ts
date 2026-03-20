@@ -5,7 +5,7 @@ import type { SimParams, Weight } from "./physics.ts";
 import type { ArrowComponents } from "./arrow.ts";
 import type { TuningState } from "../store.ts";
 
-const STATE_KEY = "bowstring-sim-state";
+const STATE_KEY = "stringforge-state";
 
 export interface PersistedState {
   params: SimParams;

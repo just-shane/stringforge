@@ -13,7 +13,9 @@
 //           sound analysis, export, glossary, wizard, guided tour
 //   3.1.0 — Phase 7: Web Worker physics, lazy loading, PWA,
 //           state persistence, high contrast theme, accessibility
+//   4.0.0 — StringForge rebrand: removed all Grace/Prime Engineering
+//           references, new branding, domain stringforge.io
 
-export const APP_VERSION = "3.1.0";
-export const APP_NAME = "Bowstring Dynamics";
-export const APP_SUBTITLE = "Speed Weight Simulator";
+export const APP_VERSION = "4.0.0";
+export const APP_NAME = "StringForge";
+export const APP_SUBTITLE = "Bowstring Dynamics Simulator";

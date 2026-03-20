@@ -16,7 +16,7 @@ export interface TuningState {
 
 function loadThemeId(): string {
   try {
-    return localStorage.getItem("bowstring-theme") ?? "midnight";
+    return localStorage.getItem("stringforge-theme") ?? "midnight";
   } catch {
     return "midnight";
   }
@@ -24,7 +24,7 @@ function loadThemeId(): string {
 
 function saveThemeId(id: string) {
   try {
-    localStorage.setItem("bowstring-theme", id);
+    localStorage.setItem("stringforge-theme", id);
   } catch {
     // localStorage unavailable
   }

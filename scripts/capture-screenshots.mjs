@@ -22,8 +22,9 @@ const page = await browser.newPage({ viewport: VIEWPORT });
 // Inject localStorage values before any page script runs
 await page.addInitScript(() => {
   try {
-    localStorage.setItem("bowstring-tour-seen", "99.0.0");
-    localStorage.setItem("bowstring-theme", "midnight");
+    localStorage.setItem("stringforge-tour-completed", "true");
+    localStorage.setItem("stringforge-tour-version", "4.0.0");
+    localStorage.setItem("stringforge-theme", "midnight");
   } catch {}
 });
 // Navigate to origin first so localStorage is available, then reload
@@ -71,8 +72,9 @@ console.log("📸 theme-neon.png");
 const neonPage = await browser.newPage({ viewport: VIEWPORT });
 await neonPage.addInitScript(() => {
   try {
-    localStorage.setItem("bowstring-tour-seen", "99.0.0");
-    localStorage.setItem("bowstring-theme", "neon");
+    localStorage.setItem("stringforge-tour-completed", "true");
+    localStorage.setItem("stringforge-tour-version", "4.0.0");
+    localStorage.setItem("stringforge-theme", "neon");
   } catch {}
 });
 await neonPage.goto(URL, { waitUntil: "load", timeout: 15000 });
