@@ -1,331 +1,420 @@
-# StringForge — Roadmap
+# 🏹 StringForge — Roadmap
+
+### The plan. The progress. The future.
+
+> **Live at:** [https://stringforge.io](https://stringforge.io)
+> Every phase below shipped to production. No vapor. No slides. Just working code.
 
 ---
 
-## API Keys & External Services
+## 🔑 API Keys & External Services
 
 | Status | Service | Required? | Notes |
 |--------|---------|-----------|-------|
-| `N/A`  | None currently | No | Fully client-side application |
-
-> Future phases may integrate external ballistics APIs or arrow database services.
+| ✅ | Plausible Analytics | Yes | `@plausible-analytics/tracker` NPM package |
+| ✅ | Sentry | Yes | `@sentry/react` error monitoring (prod only) |
+| ✅ | Let's Encrypt | Yes | Wildcard SSL via WHM AutoSSL |
+| 🔜 | Supabase | No | Future: chrono data, user accounts, API backend |
 
 ---
 
-## ✅ Phase 1: Foundation & Prototype (Complete)
+## ✅ Phase 1 — Foundation & Prototype
 
-### 1.1 Core Physics Engine
-- [x] **String vibration model** — Standing wave equation with fundamental frequency `f = (1/2L) * sqrt(T/μ)`
-- [x] **Harmonic decomposition** — First 8 harmonic modes with amplitude and damping calculations
-- [x] **String material database** — BCY-X, 452X, 8190, D97 with density, modulus, and stretch properties
+> *Where it all started. Pure physics, zero UI framework.*
+
+### 🔬 1.1 Core Physics Engine
+- [x] **String vibration model** — Standing wave: `f = (1/2L) × √(T/μ)`
+- [x] **Harmonic decomposition** — First 8 modes with amplitude & damping
+- [x] **String material database** — BCY-X, 452X, 8190, D97 with real specs
 - [x] **Weight interaction model** — Mass-loaded string physics with node proximity damping
-- [x] **Speed penalty estimation** — ~1.8 fps loss per 10 grains of added weight
-- [x] **Vibration reduction scoring** — Effectiveness calculation based on weight position and mass
+- [x] **Speed penalty estimation** — ~1.8 fps loss per 10gr of added weight
+- [x] **Vibration reduction scoring** — Effectiveness from weight position × mass
 
-### 1.2 Interactive Visualizations
-- [x] **Side profile view** — SVG string visualization with real-time vibration animation
-- [x] **Top-down cross section** — Strand bundle visualization with weight compression zones
-- [x] **Harmonic spectrum chart** — Bar chart of mode amplitudes with color-coded damping
-- [x] **Draggable weights** — Click-and-drag weight repositioning on the string visualization
+### 🎨 1.2 Interactive Visualizations
+- [x] **Side profile view** — SVG string with real-time vibration animation
+- [x] **Top-down cross section** — Strand bundle with weight compression zones
+- [x] **Harmonic spectrum chart** — Bar chart of mode amplitudes, color-coded damping
+- [x] **Draggable weights** — Click-and-drag repositioning on the string
 
-### 1.3 Controls & UI
+### 🎛️ 1.3 Controls & UI
 - [x] **String parameter sliders** — Length, brace height, strand count, tension
 - [x] **Material selector** — Toggle between 4 string materials
-- [x] **Weight management** — Add/remove up to 8 speed weights with mass, position, and type (brass/tungsten)
-- [x] **Stats dashboard** — Fundamental frequency, total mass, speed loss, vibration reduction, balance point
+- [x] **Weight management** — Add/remove up to 8 speed weights (brass/tungsten)
+- [x] **Stats dashboard** — Frequency, total mass, speed loss, vibe reduction, balance
 
 ---
 
-## ✅ Phase 2: React Migration & Project Setup (Complete)
+## ✅ Phase 2 — React Migration
 
-### 2.1 Project Scaffolding
-- [x] **Initialize React project** — Vite + React + TypeScript setup
-- [x] **Component architecture** — Modular components with proper file structure
-- [x] **State management** — Zustand for centralized simulation state
-- [x] **Tailwind CSS integration** — Utility classes with dark theme support
+> *From vanilla JS to a real architecture.*
 
-### 2.2 Component Decomposition
-- [x] **`PhysicsEngine` module** — Pure TypeScript module with full type safety
-- [x] **`StringVisualizer` component** — Side profile SVG with animation loop (requestAnimationFrame)
-- [x] **`CrossSectionView` component** — Top-down strand bundle rendering
-- [x] **`HarmonicSpectrum` component** — Frequency spectrum bar chart
-- [x] **`ControlPanel` component** — All parameter sliders, material selector, weight cards
-- [x] **`StatsBar` component** — Real-time computed metrics display
-- [x] **`WeightCard` component** — Individual weight configuration with drag interaction
+### 🏗️ 2.1 Project Scaffolding
+- [x] **Vite + React + TypeScript** — Modern build tooling
+- [x] **Component architecture** — Modular with proper file structure
+- [x] **Zustand** — Centralized simulation state
+- [x] **Tailwind CSS** — Utility classes with dark theme support
 
-### 2.3 Developer Experience
-- [x] **Unit tests for physics engine** — Vitest tests validating frequency, energy, and ballistic calculations
-- [x] **Theme system** — 6 themes (Midnight, Neon, Dracula, Nord, Monokai, Catppuccin) with runtime switching
-- [x] **Hamburger settings menu** — Theme picker with localStorage persistence
+### 🧩 2.2 Component Decomposition
+- [x] **`PhysicsEngine`** — Pure TS module, full type safety
+- [x] **`StringVisualizer`** — Side profile SVG with `requestAnimationFrame` loop
+- [x] **`CrossSectionView`** — Top-down strand bundle rendering
+- [x] **`HarmonicSpectrum`** — Frequency spectrum bar chart
+- [x] **`ControlPanel`** — Sliders, material selector, weight cards
+- [x] **`StatsBar`** — Real-time computed metrics
+- [x] **`WeightCard`** — Individual weight config with drag
+
+### 🧪 2.3 Developer Experience
+- [x] **Vitest unit tests** — Physics, energy, ballistic calculations
+- [x] **6 themes** — Midnight, Neon, Dracula, Nord, Monokai, Catppuccin
+- [x] **Hamburger menu** — Theme picker with localStorage persistence
 
 ---
 
-## ✅ Phase 3: Physics Engine Overhaul (Complete)
+## ✅ Phase 3 — Physics Engine Overhaul
 
-### 3.1 Bow Type Support
-- [x] **Bow type selector** — Compound, recurve, longbow, crossbow with distinct profiles
-- [x] **Compound cam system** — Let-off modeling (80% default), holding weight calculation
-- [x] **Draw force curves** — Per-bow-type force-displacement models
-  - Longbow: linear (Hookean), Recurve: supra-linear, Compound: peak/plateau/let-off, Crossbow: aggressive
-- [x] **Limb mechanics** — Limb mass fraction, hysteresis loss modeling per bow type
+> *Four bow families. Seven materials. Real energy models.*
 
-### 3.2 Expanded String Materials Database
+### 🏹 3.1 Bow Type Support
+- [x] **4 bow types** — Compound (cam let-off), Recurve, Longbow, Crossbow
+- [x] **Compound cam system** — 80% let-off, holding weight calc
+- [x] **Draw force curves** — Hookean, supra-linear, peak/plateau/let-off, aggressive
+- [x] **Limb mechanics** — Mass fraction, hysteresis per bow type
+
+### 🧵 3.2 String Materials Database
 - [x] **7 materials** — BCY-X, 452X, 8190, D97, Dacron B-50, Fast Flight, 8125
-- [x] **Per-material properties** — Tensile strength/strand, feet/lb, stretch %, creep rate
-- [x] **Strand count recommendations** — Auto-suggest based on draw weight, bow type, and material
-- [x] **String weight calculator** — Weight from material density and strand count
+- [x] **Per-material properties** — Tensile, feet/lb, stretch %, creep rate
+- [x] **Strand count recommendations** — Auto-suggest from draw weight + material
+- [x] **String weight calculator** — From density × strand count
 
-### 3.3 Energy Transfer Model
-- [x] **Stored energy calculation** — Numerical integration of force-draw curve
-- [x] **Efficiency model** — Per-bow-type: Longbow 65%, Recurve 74%, Compound 82%, Crossbow 78%
-- [x] **Energy loss breakdown** — Visual stacked bar: Arrow KE, Limb KE, String KE, Hysteresis, Vibration, Sound
+### ⚡ 3.3 Energy Transfer Model
+- [x] **Stored energy** — Numerical integration of force-draw curve
+- [x] **Efficiency model** — Longbow 65%, Recurve 74%, Compound 82%, Crossbow 78%
+- [x] **Energy loss breakdown** — Stacked bar: Arrow KE, Limb KE, String KE, Hysteresis, Vibe, Sound
 - [x] **Virtual arrow mass** — `m_virtual = m_arrow + m_string/3`
-- [x] **Speed prediction** — `v = sqrt(2·η·E_stored / m_virtual)` with brace height adjustment
+- [x] **Speed prediction** — `v = √(2·η·E_stored / m_virtual)`
 
-### 3.4 String Physics Improvements
-- [x] **Brace height impact model** — ~8.5 fps per inch deviation from reference
-- [x] **Cam wrap calculation** — 35% wrap per cam reducing vibrating length
-- [x] **Force-draw curve visualization** — Interactive chart with stored energy and brace height marker
+### 📐 3.4 String Physics Improvements
+- [x] **Brace height impact** — ~8.5 fps per inch deviation
+- [x] **Cam wrap calculation** — 35% wrap reducing vibrating length
+- [x] **Force-draw chart** — Interactive with stored energy & brace height marker
 
 ---
 
-## ✅ Phase 4: Arrow Dynamics (Complete)
+## ✅ Phase 4 — Arrow Dynamics
 
-### 4.1 Arrow Builder
-- [x] **Arrow component editor** — Shaft, point weight, nock, fletching, wrap with individual weights
-- [x] **Shaft database** — 15 shafts from Easton, Gold Tip, Victory, Black Eagle with spine/weight/diameter
-- [x] **Total arrow weight calculator** — Sum of all components in grains
-- [x] **FOC calculator** — `FOC% = ((Balance Point / Arrow Length) - 0.5) × 100` with ratings
+> *Full arrow builder. Spine matching. Ballistics with drag.*
 
-### 4.2 Spine Matching
-- [x] **Static spine reference** — Industry standard spine values (300, 340, 400, 500, 600, 700, etc.)
-- [x] **Dynamic spine estimator** — Adjustments for shaft length, point weight, draw weight, cam aggression
-- [x] **Spine recommendation engine** — Suggests spine based on bow setup and arrow configuration
+### 🏗️ 4.1 Arrow Builder
+- [x] **Component editor** — Shaft, point, nock, fletching, wrap with individual weights
+- [x] **15 shaft database** — Easton, Gold Tip, Victory, Black Eagle
+- [x] **Total weight calculator** — Sum of all components in grains
+- [x] **FOC calculator** — `FOC% = ((Balance / Length) - 0.5) × 100` with ratings
 
-### 4.3 Ballistics Engine
-- [x] **Trajectory calculator** — Euler method numerical integration with drag: `F_drag = 0.5·C_d·ρ·A·v²`
-- [x] **Gravity drop table** — Drop at 10-yard increments with trajectory visualization
+### 📏 4.2 Spine Matching
+- [x] **Static spine reference** — Industry standard values (300–700)
+- [x] **Dynamic spine estimator** — Adjustments for length, point weight, draw weight, cam aggression
+- [x] **Spine recommendation engine** — Auto-suggest from bow + arrow config
+
+### 🎯 4.3 Ballistics Engine
+- [x] **Trajectory calculator** — Euler method with drag: `F_drag = ½·Cd·ρ·A·v²`
+- [x] **Gravity drop table** — Every 10 yards with trajectory viz
 - [x] **Wind drift model** — Lateral deflection from crosswind
-- [x] **Kinetic energy & momentum** — `KE = (m·v²)/450,800`, `p = (m·v)/225,400`
-- [x] **Effective/max range** — Range limits based on minimum KE thresholds (40/25 ft-lbs)
+- [x] **KE & momentum** — `KE = (m·v²)/450,800` · `p = (m·v)/225,400`
+- [x] **Effective/max range** — KE threshold limits (40/25 ft-lbs)
 
-### 4.4 UI Additions
-- [x] **Tabbed control panel** — "Bow & String" / "Arrow" tabs in the left panel
-- [x] **Arrow builder panel** — Shaft selector (grouped by manufacturer), component sliders, summary stats
-- [x] **Trajectory visualization** — SVG drop curve with annotated data points
+### 📊 4.4 UI Additions
+- [x] **Tabbed control panel** — Bow & String / Arrow tabs
+- [x] **Arrow builder panel** — Grouped shaft selector, component sliders, summary stats
+- [x] **Trajectory visualization** — SVG drop curve with annotated points
 - [x] **Ballistics data table** — Distance, drop, drift, velocity, KE, momentum, flight time
 
 ---
 
-## ✅ Phase 5: Tuning Tools (Complete)
+## ✅ Phase 5 — Tuning Tools
 
-> **Why it matters:** Bow tuning is the most time-consuming part of archery setup. Digital tools that simulate tuning procedures save hours at the range and help archers understand *why* adjustments work.
+> *Paper tune, bare shaft, walk-back — in your browser instead of at the range.*
 
-### 5.1 Paper Tune Simulator
-- [x] **Virtual paper target** — Show predicted tear pattern based on current setup
-- [x] **Tear diagnosis engine** — Identify cause from tear direction:
-  - Tail left (RH): too stiff / rest too far left
-  - Tail right (RH): too weak / rest too far right
-  - Tail high: nock point too high
-  - Tail low: nock point too low
-- [x] **Adjustment suggestions** — Recommend specific changes to achieve bullet hole
+### 📄 5.1 Paper Tune Simulator
+- [x] **Virtual paper target** — Predicted tear pattern from current setup
+- [x] **Tear diagnosis** — Tail left/right/high/low → stiff/weak/nock point
+- [x] **Adjustment suggestions** — Specific changes to achieve bullet hole
 
-### 5.2 Bare Shaft Tuning
-- [x] **Bare vs. fletched comparison** — Predict group separation based on spine mismatch
-- [x] **Iterative tuning workflow** — Step-by-step guide with visual feedback
+### 🏹 5.2 Bare Shaft Tuning
+- [x] **Bare vs. fletched comparison** — Group separation from spine mismatch
+- [x] **Iterative workflow** — Step-by-step guide with visual feedback
 
-### 5.3 Walk-Back Tuning
-- [x] **Virtual target** — Simulated vertical line with arrow impacts at increasing distances
-- [x] **Centershot diagnosis** — Detect and correct rest/centershot misalignment from drift pattern
+### 📍 5.3 Walk-Back Tuning
+- [x] **Virtual target** — Vertical line with impacts at increasing distances
+- [x] **Centershot diagnosis** — Detect and correct rest misalignment
 
-### 5.4 Setup Optimizer
-- [x] **Multi-variable optimizer** — Find optimal combination of:
-  - String material + strand count for target speed/noise balance
-  - Weight placement for maximum vibration reduction with minimum speed loss
-  - Arrow spine + weight for bow setup
-- [x] **Comparison mode** — Side-by-side comparison of two complete setups
+### ⚙️ 5.4 Setup Optimizer
+- [x] **Multi-variable optimizer** — String material × strand count × weight placement × spine
+- [x] **Comparison mode** — Side-by-side two complete setups
 
 ---
 
-## ✅ Phase 6: Advanced Features (Complete)
+## ✅ Phase 6 — Advanced Features
 
-### 6.1 Bow Profiles & Presets
-- [x] **Bow database** — 15 bows from Mathews, Hoyt, Bowtech, PSE, Prime/G5, Elite, Bear, Win&Win, Gillo, Howard Hill, TenPoint, Ravin with factory specs (ATA length, brace height, IBO speed, cam type)
-- [x] **Custom bow profiles** — Save/load complete bow configurations to localStorage with profile manager
-- [x] **Arrow presets** — 6 presets: Heavy Hunting, Standard Hunting, Speed Hunting, Outdoor Target, Indoor Target, 3D Competition
+> *Bow database. Draw cycle animation. Sound synthesis. The works.*
 
-### 6.2 Draw Cycle Visualization
-- [x] **Animated draw sequence** — Full draw cycle SVG showing limb deflection, cam rotation, string path with play/scrub controls
-- [x] **Let-off visualization** — Highlight holding weight vs. peak weight for compound bows, real-time force & energy bars
+### 📚 6.1 Bow Profiles & Presets
+- [x] **15-bow database** — Mathews, Hoyt, Bowtech, PSE, Prime, Elite, Bear, Win&Win + more
+- [x] **Custom profiles** — Save/load complete configs to localStorage
+- [x] **6 arrow presets** — Heavy Hunting → 3D Competition
 
-### 6.3 Sound & Vibration Analysis
-- [x] **Audio synthesis** — Generate realistic bowstring "twang" from harmonic spectrum data using Web Audio API
-- [x] **Vibration frequency waterfall** — Time-frequency SVG plot showing harmonic decay after release
-- [x] **Decibel estimation** — Approximate shot noise level with calibrated model, dB meter visual, real-world comparisons
+### 🎬 6.2 Draw Cycle Visualization
+- [x] **Animated draw sequence** — Limb deflection, cam rotation, string path, play/scrub
+- [x] **Let-off visualization** — Holding weight vs. peak weight, real-time force & energy bars
 
-### 6.4 Data & Export
-- [x] **Setup export** — Complete text setup report with download/copy functionality
-- [x] **Share links** — URL-encoded state (base64) for sharing configurations, auto-load on page open
-- [x] **Comparison reports** — Full setup report with all metrics for before/after analysis
+### 🔊 6.3 Sound & Vibration Analysis
+- [x] **Audio synthesis** — Bowstring "twang" from harmonic spectrum via Web Audio API
+- [x] **Vibration waterfall** — Time-frequency SVG of harmonic decay
+- [x] **dB estimation** — Shot noise level with calibrated model + real-world comparisons
 
-### 6.5 Educational Mode
-- [x] **Glossary panel** — 28 archery terms across 5 categories with search, related term navigation, detailed explanations
-- [x] **Physics explainers** — Detailed explanations of standing waves, Archer's Paradox, efficiency, stored energy in glossary
-- [x] **Beginner setup wizard** — Guided 4-5 step flow: purpose → experience → measurements → game (hunting) → recommendation with apply-to-simulator
+### 📤 6.4 Data & Export
+- [x] **Setup export** — Full text report, download/copy
+- [x] **Share links** — Base64 URL-encoded state, auto-load on open
+- [x] **Comparison reports** — Before/after analysis with all metrics
 
----
-
-## ✅ Guided Tour & Versioning (Complete)
-
-- [x] **React Joyride integration** — 11-step guided tour covering all major sections
-- [x] **Auto-launch for new users** — Tour shows on first visit, remembers completion in localStorage
-- [x] **Version-aware reset** — Tour re-triggers when app version changes so users see new features
-- [x] **Replay button** — "Replay Guided Tour" link at bottom of main panel
-- [x] **Theme-matched styling** — Tour tooltips match active theme colors
-- [x] **Version tracking** — Centralized `src/lib/version.ts` with `APP_VERSION`, semantic versioning (MAJOR.MINOR.PATCH), changelog
-- [x] **Version display** — Header shows current version from single source of truth
-- [x] **package.json synced** — `3.1.0`
+### 🎓 6.5 Educational Mode
+- [x] **Glossary** — 28 terms across 5 categories with search & navigation
+- [x] **Physics explainers** — Standing waves, Archer's Paradox, efficiency, stored energy
+- [x] **Setup wizard** — 4-5 step guided flow → apply recommendation to simulator
 
 ---
 
-## ✅ Phase 7: Platform & Polish (Complete)
+## ✅ Guided Tour & Versioning
 
-### 7.1 Performance
-- [x] **Web Workers** — Physics offloaded to worker thread via `usePhysicsWorker` hook (auto-fallback to main thread)
-- [x] **Lazy loading** — Code-split 9 components via `React.lazy()`: DocsPanel, GlossaryPanel, SetupWizard, TuningPanel, BowDatabase, ProfileManager, DrawCycleView, SoundAnalysis, ShareExport. Initial bundle reduced 25% (479→360 KB gzipped)
+- [x] 🗺️ **React Joyride** — 11-step tour covering all major sections
+- [x] 🆕 **Auto-launch** — First visit + version change triggers
+- [x] 🔄 **Replay button** — "Replay Guided Tour" in main panel
+- [x] 🎨 **Theme-matched tooltips** — Matches active theme colors
+- [x] 🏷️ **Version tracking** — `src/lib/version.ts` single source of truth, semantic versioning
+
+---
+
+## ✅ Phase 7 — Platform & Polish
+
+> *Web Workers. PWA. Accessibility. Ship-quality code.*
+
+### ⚡ 7.1 Performance
+- [x] **Web Workers** — Physics offloaded via `usePhysicsWorker` hook (auto-fallback)
+- [x] **Lazy loading** — 9 code-split components via `React.lazy()`, initial bundle -25%
 - [x] **Suspense boundaries** — Loading fallback for all lazy components
 
-### 7.2 Responsive & PWA
-- [x] **Mobile-optimized layout** — Controls/Visualizations toggle on mobile, full-height panels, touch-friendly sizing
-- [x] **PWA manifest** — `manifest.json` with app name, icons, standalone display, theme color
-- [x] **Service worker** — Network-first caching strategy for offline support (`sw.js`)
-- [x] **Local storage persistence** — Auto-save all bow/arrow/tuning state, debounced 500ms, restores on reload
-- [x] **Apple mobile web app** — Meta tags for iOS standalone mode
+### 📱 7.2 Responsive & PWA
+- [x] **Mobile layout** — Controls/Viz toggle, full-height panels, touch-friendly
+- [x] **PWA manifest** — Standalone display, icons, theme color
+- [x] **Service worker** — Network-first caching, offline support
+- [x] **State persistence** — Auto-save all state, debounced 500ms, restores on reload
+- [x] **Apple web app** — iOS standalone mode meta tags
 
-### 7.3 Accessibility
-- [x] **Skip navigation link** — "Skip to main content" for keyboard users (visible on focus)
-- [x] **Keyboard navigation** — Escape closes all modals, proper tab order, `tabIndex` on tab buttons, `aria-pressed` on toggles
-- [x] **Screen reader support** — ARIA roles (`tablist`, `tab`, `tabpanel`, `region`, `status`, `img`, `navigation`), `aria-label` on all visualizations, `aria-live` on dynamic values, `aria-selected`/`aria-controls` on tabs
-- [x] **Slider accessibility** — `aria-valuemin`/`aria-valuemax`/`aria-valuenow`/`aria-valuetext`, proper `<label>` associations with `htmlFor`
-- [x] **High contrast theme** — 7th theme: pure black bg, white text, #00ff88 accent for maximum visibility
-- [x] **Version consistency** — HamburgerMenu footer uses `APP_VERSION` constant (was hardcoded v2.0)
-
----
-
-## ✅ Phase 8: Testing Suite (Complete)
-
-### 8.1 E2E Tests (Playwright)
-- [x] **Playwright config** — Auto-starts Vite dev server, Chromium project, HTML reporter
-- [x] **App loading tests** — 6 tests: page title, header/version, tabs, stats bar, SVG visualizer, header buttons
-- [x] **Bow configuration tests** — 5 tests: default compound, recurve physics update, bow type switching, material buttons
-- [x] **Tab navigation tests** — 6 tests: all 5 tabs load correct panels, ARIA attributes, aria-selected state
-- [x] **Wizard/modal tests** — 3 tests: Setup Wizard, Glossary, Docs open and close (Escape key)
-- [x] **Theme switching tests** — 4 tests: Midnight default, Neon accent verification, High Contrast colors, all 7 themes error-free
-- [x] **Tour dismissal helper** — MutationObserver removes joyride portal for clean E2E runs
-
-### 8.2 Accessibility Tests (axe-core)
-- [x] **WCAG 2.0 AA scans** — axe-core on main page, Arrow tab, Tune tab (zero critical/serious violations)
-- [x] **High Contrast validation** — Color-contrast checks pass with High Contrast theme
-- [x] **ARIA structure verification** — Tablist with 5 tabs, aria-selected, aria-label on navigation
-- [x] **Skip navigation link** — Present in DOM for keyboard users
-- [x] **Main landmark check** — `<main>` element with proper id
-- [x] **Form label fixes** — Added aria-label to 5 range inputs (DrawCycle, Wizard, TuningPanel, SetupOptimizer) and arrow shaft select; connected label/id on optimizer selects
-
-### 8.3 Visual Regression
-- [x] **Playwright screenshot baselines** — 5 baselines: Midnight, Neon, High Contrast dashboards + Arrow tab + Tune tab
-- [x] **Deterministic captures** — Reduced motion, disabled animations, 2% pixel diff threshold
-- [x] **Update workflow** — `npm run test:e2e:update` regenerates baselines
-
-### 8.4 CI/CD Pipeline
-- [x] **GitHub Actions workflow** — `.github/workflows/test.yml` runs on push/PR to main
-- [x] **Two-stage pipeline** — Unit tests + lint → E2E + accessibility (E2E skipped if units fail)
-- [x] **Artifact uploads** — Playwright report + test results uploaded on failure
-- [x] **Package.json scripts** — `test:e2e`, `test:a11y`, `test:visual`, `test:all`, `test:e2e:ui`
-
-### 8.5 Lint Cleanup
-- [x] **Zero eslint errors** — Removed all unused imports/variables across 15 files
-- [x] **Eliminated `any` types** — Replaced with `Theme["colors"]` in BowDatabase and Wizard
-- [x] **Fixed setState-in-effect** — Lazy initializers (ProfileManager), derived state (GuidedTour), useRef (usePhysicsWorker)
+### ♿ 7.3 Accessibility
+- [x] **Skip navigation** — "Skip to main content" link
+- [x] **Keyboard navigation** — Escape closes modals, proper tab order, ARIA attributes
+- [x] **Screen reader support** — Full ARIA roles, labels, live regions
+- [x] **Slider a11y** — `aria-valuemin/max/now/text`, proper `<label>` associations
+- [x] **High Contrast theme** — 7th theme: pure black bg, white text, #00ff88 accent
 
 ---
 
-## ✅ Phase 9: StringForge Rebrand (Complete)
+## ✅ Phase 8 — Testing Suite
 
-> **Legal requirement:** All Grace/Prime Engineering references must be completely removed before monetization. Grace is highly litigious.
+> *145 unit tests. 31 E2E. 5 visual baselines. 181 total. Zero excuses.*
 
-### 9.1 Codebase Rebrand
-- [x] **App identity** — APP_NAME → "StringForge", APP_SUBTITLE → "Bowstring Dynamics Simulator", version → 4.0.0
-- [x] **Header** — Removed "G5" logo and "PRIME ARCHERY DIV / GRACE ENGINEERING" text, replaced with "SF" + "STRINGFORGE.IO / EST. 2026"
-- [x] **HTML meta** — Title, description, apple-mobile-web-app-title updated to StringForge branding
-- [x] **manifest.json** — App name, short name, description rebranded
-- [x] **Service worker** — Cache name updated to `stringforge-v4`
-- [x] **package.json** — Name → "stringforge", version → 4.0.0
-- [x] **Export reports** — Setup report header/footer rebranded to StringForge
-- [x] **Panel footers** — Glossary, Docs footers updated to "© 2026 StringForge.io"
-- [x] **Guided tour** — Welcome text rebranded
-- [x] **Hamburger menu** — Footer text updated
-- [x] **Bow database** — Removed "G5" from Prime manufacturer, removed "our house bow" reference
-- [x] **localStorage keys** — All keys renamed from `bowstring-*` to `stringforge-*`
-- [x] **Persist module** — State key updated to `stringforge-state`
-- [x] **Unit tests** — Updated assertions for new app name, version, localStorage keys
-- [x] **E2E tests** — Updated title, app name, version assertions
-- [x] **Screenshot script** — Updated localStorage keys
+### 🎭 8.1 E2E Tests (Playwright)
+- [x] **6 app loading tests** — Title, header, tabs, stats, SVG, buttons
+- [x] **5 bow config tests** — Default compound, recurve physics, bow switching, materials
+- [x] **6 tab navigation tests** — All 5 tabs, ARIA attributes, aria-selected
+- [x] **3 modal tests** — Wizard, Glossary, Docs open/close (Escape)
+- [x] **4 theme tests** — Midnight default, Neon accent, High Contrast, all 7 error-free
 
-### 9.2 Logo & Favicon ✅
-- [x] **StringForge SVG logo** — Drawn bow with arrow, blue gradient limb, forge sparks at tip, dark background
-- [x] **Favicon** — Updated `public/favicon.svg` with StringForge bow & arrow icon
-- [x] **PWA icons** — Generated 192px and 512px PNG icons via Playwright render
-- [x] **Apple touch icon** — 180px PNG for iOS home screen
-- [x] **Theme color** — Updated to #3b82f6 (archery blue) in manifest + meta tag
-- [x] **OG image** — 1200x630 social preview card with logo, tagline, feature tags
+### ♿ 8.2 Accessibility Tests (axe-core)
+- [x] **WCAG 2.0 AA scans** — Zero critical/serious violations
+- [x] **High Contrast validation** — Color-contrast checks pass
+- [x] **ARIA structure** — Tablist, aria-selected, aria-label, landmarks, skip nav
 
-### 9.3 Deploy to stringforge.io ✅
-- [x] **GitHub Actions CI/CD** — Test → Build → Deploy via FTPS on push to main (SamKirkland/FTP-Deploy-Action)
-- [x] **Apache .htaccess** — HTTPS redirect, security headers, Vite-optimized caching, SPA fallback, gzip
-- [x] **DNS** — stringforge.io → 67.222.28.49 (St. Clair Hosting / KnownHost VPS)
-- [x] **HTTPS/SSL** — Let's Encrypt wildcard cert via WHM AutoSSL (*.stringforge.io)
-- [x] **Live site** — https://stringforge.io fully operational
-- [x] **Repo rename** — GitHub repo renamed from `bowstring-sim` → `stringforge`
+### 📸 8.3 Visual Regression
+- [x] **5 screenshot baselines** — Midnight, Neon, High Contrast + Arrow + Tune tabs
+- [x] **Deterministic captures** — Reduced motion, 2% pixel diff threshold
 
-### 9.4 Analytics & Social ✅
-- [x] **Analytics** — Plausible via `@plausible-analytics/tracker` NPM package (outbound links, file downloads, form submissions)
-- [x] **Open Graph cards** — OG meta tags + `og-image.png` for link sharing
-- [x] **Twitter cards** — `summary_large_image` meta tags added
-- [x] **Structured data** — JSON-LD WebApplication schema with features, pricing, keywords
+### 🔄 8.4 CI/CD Pipeline
+- [x] **GitHub Actions** — Runs on push/PR to main
+- [x] **Two-stage pipeline** — Unit + lint → E2E + a11y
+- [x] **Artifact uploads** — Playwright report on failure
+
+### 🧹 8.5 Lint Cleanup
+- [x] **Zero eslint errors** — Cleaned 15 files
+- [x] **No `any` types** — Replaced with proper generics
+- [x] **Fixed setState-in-effect** — Lazy initializers, derived state, useRef
 
 ---
 
-## 🔜 Phase 10: Production Hardening (Next)
+## ✅ Phase 9 — StringForge Rebrand
 
-### 10.1 Error Monitoring ✅
-- [x] **Sentry integration** — `@sentry/react` initialized in production only with DSN
-- [x] **Error boundary** — `Sentry.ErrorBoundary` wrapping entire app with fallback UI
-- [ ] **Performance monitoring** — Sentry performance tracing for physics computation and render times
+> *⚖️ Legal requirement: all Grace/Prime Engineering references removed for monetization.*
 
-### 10.2 Marketing Push
+### 🔤 9.1 Codebase Rebrand
+- [x] **App identity** — `StringForge` · `Bowstring Dynamics Simulator` · v4.0.0
+- [x] **Header** — "G5" → "SF" · "PRIME ARCHERY DIV" → "STRINGFORGE.IO / EST. 2026"
+- [x] **22 files updated** — HTML, manifest, SW, package.json, tests, exports, panels, tours, menus
+- [x] **localStorage migration** — All keys `bowstring-*` → `stringforge-*`
+
+### 🎨 9.2 Logo & Favicon
+- [x] **SVG logo** — Drawn bow with arrow, blue gradient limb, forge sparks, dark background
+- [x] **PWA icons** — 192px, 512px, 180px Apple Touch via Playwright render
+- [x] **OG image** — 1200×630 social preview card with logo + tagline + feature tags
+- [x] **Theme color** — `#3b82f6` archery blue everywhere
+
+### 🚀 9.3 Deploy to stringforge.io
+- [x] **CI/CD** — GitHub Actions: Test → Build → FTPS deploy on push to main
+- [x] **Apache .htaccess** — HTTPS redirect, security headers, Vite caching, SPA fallback, gzip
+- [x] **DNS** — `stringforge.io` → `67.222.28.49` (St. Clair Hosting)
+- [x] **SSL** — Let's Encrypt wildcard `*.stringforge.io` via WHM AutoSSL
+- [x] **Repo rename** — `bowstring-sim` → `stringforge`
+
+### 📊 9.4 Analytics & Social
+- [x] **Plausible Analytics** — NPM package with outbound links, file downloads, form tracking
+- [x] **Open Graph cards** — `og:title`, `og:description`, `og:image` for link sharing
+- [x] **Twitter cards** — `summary_large_image` meta tags
+- [x] **JSON-LD** — `WebApplication` schema with features, pricing, keywords
+
+---
+
+## 🔜 Phase 10 — Production Hardening
+
+> *Error monitoring. Marketing. Money.*
+
+### 🛡️ 10.1 Error Monitoring
+- [x] **Sentry** — `@sentry/react` initialized in production only
+- [x] **Error boundary** — `Sentry.ErrorBoundary` wrapping entire app
+- [ ] **Performance tracing** — Sentry perf for physics computation & render times
+
+### 📣 10.2 Marketing Push
 - [ ] **Reddit launch** — r/archery, r/bowhunting, r/CompoundBow with demo link
 - [ ] **ArcheryTalk forum** — Post in DIY/Technical section
 - [ ] **YouTube demo** — Screen recording walkthrough for archers
 - [ ] **SEO content** — Landing page copy, blog posts on archery physics
 
-### 10.3 Monetization Prep
+### 💰 10.3 Monetization Prep
 - [ ] **Ko-fi / Patreon** — Donation link in app footer
 - [ ] **Premium features** — Save configs, export PDF, advanced tuning presets (gated)
 - [ ] **Stripe integration** — Payment processing for premium tier
 
 ---
 
-> **Test Suite Summary:**
-> - 145 unit tests (Vitest) — physics, arrow, store, tuning, phase6, phase7
-> - 31 E2E + accessibility tests (Playwright + axe-core)
-> - 5 visual regression baselines (Playwright screenshots)
-> - **181 total tests**
+## 💡 Phase 11 — Chronograph Calibration & Adaptive Learning
+
+> *The killer feature. Feed real chrono data back in. The simulator gets smarter every shot.*
+>
+> StringForge stops being a calculator and becomes a **learning system**.
+
+### 📟 11.1 Chronograph Data Input
+- [ ] **Chrono input panel** — New tab/section for entering actual fps readings
+- [ ] **Multi-shot entry** — 10-shot string with auto average, SD, and ES calculation
+- [ ] **Setup snapshot** — Freeze full sim state at time of entry (bow + string + arrow + weights)
+- [ ] **Device tags** — Optional chronograph model (Garmin Xero, Caldwell, LabRadar) for accuracy profiles
+- [ ] **Session history** — localStorage with timestamps, review/edit/delete
+
+### 📊 11.2 Predicted vs. Actual
+- [ ] **Delta dashboard** — Predicted fps vs. actual fps, % error, confidence indicator
+- [ ] **Variance breakdown** — Likely error sources: efficiency, arrow weight tolerance, string stretch, cam timing
+- [ ] **Visual overlay** — Chrono data points plotted on force-draw/energy chart
+- [ ] **Per-component attribution** — _"Your bow is 3% less efficient than model"_ or _"Arrow likely weighs 8gr more than spec"_
+
+### 🧠 11.3 Personal Calibration Engine
+- [ ] **Efficiency correction** — Auto-calculate per-bow coefficient (e.g., _this_ V3X = 79.2%, not default 82%)
+- [ ] **Arrow weight refinement** — Back-calculate actual total weight from chrono + bow energy
+- [ ] **Calibration profiles** — Save per-bow corrections, all future predictions use them
+- [ ] **Confidence scoring** — More data = tighter band. Show `± X fps` uncertainty that shrinks with shots
+- [ ] **Recalibrate prompt** — Nudge when user changes string material, strand count, or weight placement
+
+### 🌐 11.4 Community Learning *(requires backend/API)*
+- [ ] **Anonymous data aggregation** — Opt-in upload of anonymized chrono data + setup configs
+- [ ] **Crowd-sourced corrections** — Aggregate efficiency factors across hundreds of users per bow model
+- [ ] **Bow model accuracy rankings** — _"V3X predictions within 1.2% for 847 users"_ — builds trust
+- [ ] **Material performance data** — Real-world speed diffs between string materials, community-validated
+- [ ] **Outlier detection** — Flag statistically unlikely submissions before they pollute the model
+- [ ] **Environmental normalization** — Factor out temp, altitude, humidity from aggregated data
+
+### 🎯 11.5 Smart Recommendations
+- [ ] **"Users like you"** — _"Archers with similar setups gained 4 fps switching from 452X to BCY-X"_
+- [ ] **Optimal weight placement** — Backed by real-world data, not just physics models
+- [ ] **Setup validation** — _"Your setup matches 234 verified configs with avg actual speed of 291 fps"_
+- [ ] **Trend analysis** — Track performance drift over time (string stretch, cam timing, limb fatigue)
 
 ---
 
-> **Reference values for validation:**
-> - 70 lb compound, 30" draw, 350gr arrow → ~290-310 fps (IBO conditions)
-> - 24-strand BCY-X string ≈ 70-90 grains
-> - Compound efficiency ≈ 80-85%
-> - Arrow KE at 300 fps / 400gr = 79.9 ft-lbs
-> - Fundamental string frequency at 350 lbs tension, 50" vibrating length ≈ 120-160 Hz
+## 🔮 Phase 12 — StringForge API
+
+> *The physics engine, calibration data, and community dataset become the archery industry's data backbone.*
+>
+> Free simulator gets users in the door. Chrono loop keeps them. API monetizes the data. **That's the flywheel.**
+
+### ⚙️ 12.1 Core API — Physics Engine as a Service
+- [ ] **REST API** — Express/Fastify on Node.js or Supabase Edge Functions
+- [ ] **`POST /simulate`** — Bow + string + arrow config → full physics results
+- [ ] **`POST /trajectory`** — Arrow ballistics: drop table, wind drift, KE/momentum at distance
+- [ ] **`POST /spine-match`** — Dynamic spine recommendation from bow + arrow params
+- [ ] **`POST /tune`** — Paper tune / bare shaft diagnosis from setup config
+- [ ] **`GET /bows`** — Bow database, filterable by manufacturer/type/IBO
+- [ ] **`GET /shafts`** — Arrow shaft database, filterable by spine/weight/diameter
+- [ ] **`GET /materials`** — String materials with all properties
+- [ ] **API key management** — Free tier (100 req/day), Pro tier (unlimited), dashboard
+- [ ] **OpenAPI/Swagger docs** — Auto-generated interactive documentation
+- [ ] **Rate limiting & caching** — Redis-backed limits, cache common lookups
+
+### 📡 12.2 Calibration Data API *(Phase 11 backend)*
+- [ ] **`POST /chrono`** — Submit chronograph readings with setup snapshot
+- [ ] **`GET /calibration/{bow_model}`** — Crowd-sourced correction factor for a bow model
+- [ ] **`GET /accuracy/{bow_model}`** — Prediction stats: mean error, sample size, confidence interval
+- [ ] **`GET /trends/{bow_model}`** — Performance trends over time
+- [ ] **Supabase/Postgres backend** — Anonymized chrono submissions, corrections, calibration profiles
+- [ ] **Auth** — Supabase Auth for user accounts, API key generation, data ownership
+
+### 🏪 12.3 Pro Shop & Retail Integrations
+- [ ] **Bow fitting widget** — Embeddable component: draw weight + length → instant arrow recommendations
+- [ ] **POS integration** — API calls from point-of-sale to suggest arrow builds at purchase
+- [ ] **"Build & Buy" links** — Product links (Lancaster, Amazon) for recommended components → affiliate revenue 💸
+- [ ] **Shop dashboard** — _"Most popular setups your customers run"_ → inventory insights
+- [ ] **QR code setup cards** — Scan at the shop → load exact setup in StringForge
+
+### 📱 12.4 Mobile App & Device Integrations
+- [ ] **React Native app** — Native mobile wrapper around API + local physics engine
+- [ ] **Smartwatch companion** — Apple Watch / Garmin: log chrono readings → push to StringForge
+- [ ] **Garmin Xero integration** — Pull chronograph data directly from Garmin Connect API
+- [ ] **LabRadar Bluetooth** — Direct BT sync from LabRadar chronograph to StringForge
+
+### 🤝 12.5 Content & Data Licensing
+- [ ] **Manufacturer partnerships** — Verified specs in exchange for "Verified by [Brand]" badges
+- [ ] **Embedded calculators** — _"See how the V3X performs with your setup"_ on product pages
+- [ ] **Media/review sites** — Interactive speed comparisons embedded in review articles
+- [ ] **Tournament platforms** — Equipment data for archer profiles in scoring systems
+
+### 🤖 12.6 Advanced Analytics & ML
+- [ ] **Predictive model training** — ML models trained on aggregated chrono data to beat pure physics
+- [ ] **Anomaly detection** — Flag underperforming bows vs. community baseline (worn cams, string stretch)
+- [ ] **Equipment lifecycle tracking** — _"Your string has ~2,000 shots — users see 2-3 fps drop at this point"_
+- [ ] **A/B testing framework** — Test physics model improvements against real-world data before shipping
+
+---
+
+## 📈 Stats
+
+> **Test Suite:** 145 unit (Vitest) · 31 E2E + a11y (Playwright + axe-core) · 5 visual baselines · **181 total**
+
+> **Stack:** React 19 · TypeScript · Vite · Zustand · Tailwind v4 · Web Workers · PWA
+
+> **Infra:** GitHub Actions CI/CD · FTPS deploy · St. Clair Hosting · Let's Encrypt · Plausible · Sentry
+
+---
+
+## 🔢 Reference Values
+
+| Scenario | Expected |
+|----------|----------|
+| 70lb compound, 30" draw, 350gr arrow | ~290–310 fps (IBO) |
+| 24-strand BCY-X string | ~70–90 grains |
+| Compound efficiency | ~80–85% |
+| Arrow KE at 300 fps / 400gr | 79.9 ft-lbs |
+| Fundamental freq @ 350 lbs tension, 50" | ~120–160 Hz |
