@@ -117,61 +117,61 @@
 
 ---
 
-## 🚀 Phase 5: Tuning Tools
+## ✅ Phase 5: Tuning Tools (Complete)
 
 > **Why it matters:** Bow tuning is the most time-consuming part of archery setup. Digital tools that simulate tuning procedures save hours at the range and help archers understand *why* adjustments work.
 
 ### 5.1 Paper Tune Simulator
-- [ ] **Virtual paper target** — Show predicted tear pattern based on current setup
-- [ ] **Tear diagnosis engine** — Identify cause from tear direction:
+- [x] **Virtual paper target** — Show predicted tear pattern based on current setup
+- [x] **Tear diagnosis engine** — Identify cause from tear direction:
   - Tail left (RH): too stiff / rest too far left
   - Tail right (RH): too weak / rest too far right
   - Tail high: nock point too high
   - Tail low: nock point too low
-- [ ] **Adjustment suggestions** — Recommend specific changes to achieve bullet hole
+- [x] **Adjustment suggestions** — Recommend specific changes to achieve bullet hole
 
 ### 5.2 Bare Shaft Tuning
-- [ ] **Bare vs. fletched comparison** — Predict group separation based on spine mismatch
-- [ ] **Iterative tuning workflow** — Step-by-step guide with visual feedback
+- [x] **Bare vs. fletched comparison** — Predict group separation based on spine mismatch
+- [x] **Iterative tuning workflow** — Step-by-step guide with visual feedback
 
 ### 5.3 Walk-Back Tuning
-- [ ] **Virtual target** — Simulated vertical line with arrow impacts at increasing distances
-- [ ] **Centershot diagnosis** — Detect and correct rest/centershot misalignment from drift pattern
+- [x] **Virtual target** — Simulated vertical line with arrow impacts at increasing distances
+- [x] **Centershot diagnosis** — Detect and correct rest/centershot misalignment from drift pattern
 
 ### 5.4 Setup Optimizer
-- [ ] **Multi-variable optimizer** — Find optimal combination of:
+- [x] **Multi-variable optimizer** — Find optimal combination of:
   - String material + strand count for target speed/noise balance
   - Weight placement for maximum vibration reduction with minimum speed loss
   - Arrow spine + weight for bow setup
-- [ ] **Comparison mode** — Side-by-side comparison of two complete setups
+- [x] **Comparison mode** — Side-by-side comparison of two complete setups
 
 ---
 
-## 🔮 Phase 6: Advanced Features
+## ✅ Phase 6: Advanced Features (Complete)
 
 ### 6.1 Bow Profiles & Presets
-- [ ] **Bow database** — Common compound and recurve bows with factory specs (ATA length, brace height, IBO speed, cam type)
-- [ ] **Custom bow profiles** — Save/load complete bow configurations
-- [ ] **Arrow presets** — Common arrow builds (Easton, Gold Tip, Victory, Black Eagle shafts)
+- [x] **Bow database** — 15 bows from Mathews, Hoyt, Bowtech, PSE, Prime/G5, Elite, Bear, Win&Win, Gillo, Howard Hill, TenPoint, Ravin with factory specs (ATA length, brace height, IBO speed, cam type)
+- [x] **Custom bow profiles** — Save/load complete bow configurations to localStorage with profile manager
+- [x] **Arrow presets** — 6 presets: Heavy Hunting, Standard Hunting, Speed Hunting, Outdoor Target, Indoor Target, 3D Competition
 
 ### 6.2 Draw Cycle Visualization
-- [ ] **Animated draw sequence** — Full draw cycle showing limb deflection, cam rotation, string path
-- [ ] **Let-off visualization** — Highlight holding weight vs. peak weight for compound bows
+- [x] **Animated draw sequence** — Full draw cycle SVG showing limb deflection, cam rotation, string path with play/scrub controls
+- [x] **Let-off visualization** — Highlight holding weight vs. peak weight for compound bows, real-time force & energy bars
 
 ### 6.3 Sound & Vibration Analysis
-- [ ] **Audio synthesis** — Generate realistic bowstring "twang" from harmonic spectrum data
-- [ ] **Vibration frequency waterfall** — Time-frequency plot showing harmonic decay after release
-- [ ] **Decibel estimation** — Approximate shot noise level based on energy dissipation
+- [x] **Audio synthesis** — Generate realistic bowstring "twang" from harmonic spectrum data using Web Audio API
+- [x] **Vibration frequency waterfall** — Time-frequency SVG plot showing harmonic decay after release
+- [x] **Decibel estimation** — Approximate shot noise level with calibrated model, dB meter visual, real-world comparisons
 
 ### 6.4 Data & Export
-- [ ] **Setup export** — PDF/PNG export of complete bow setup report
-- [ ] **Share links** — URL-encoded state for sharing configurations
-- [ ] **Comparison reports** — Before/after setup change analysis
+- [x] **Setup export** — Complete text setup report with download/copy functionality
+- [x] **Share links** — URL-encoded state (base64) for sharing configurations, auto-load on page open
+- [x] **Comparison reports** — Full setup report with all metrics for before/after analysis
 
 ### 6.5 Educational Mode
-- [ ] **Glossary panel** — Hover-definitions for archery terms (brace height, FOC, spine, etc.)
-- [ ] **Physics explainers** — Interactive demonstrations of key concepts (standing waves, Archer's Paradox, drag)
-- [ ] **Beginner setup wizard** — Guided flow: select bow type → draw weight → draw length → get arrow recommendation
+- [x] **Glossary panel** — 28 archery terms across 5 categories with search, related term navigation, detailed explanations
+- [x] **Physics explainers** — Detailed explanations of standing waves, Archer's Paradox, efficiency, stored energy in glossary
+- [x] **Beginner setup wizard** — Guided 4-5 step flow: purpose → experience → measurements → game (hunting) → recommendation with apply-to-simulator
 
 ---
 

@@ -39,6 +39,8 @@ interface SimState {
   theme: Theme;
   menuOpen: boolean;
   docsOpen: boolean;
+  glossaryOpen: boolean;
+  wizardOpen: boolean;
 
   setParam: <K extends keyof SimParams>(key: K, value: SimParams[K]) => void;
   setBowType: (bowType: BowType) => void;
@@ -50,6 +52,8 @@ interface SimState {
   setWindSpeed: (speed: number) => void;
   setTuning: <K extends keyof TuningState>(key: K, value: TuningState[K]) => void;
   setDocsOpen: (open: boolean) => void;
+  setGlossaryOpen: (open: boolean) => void;
+  setWizardOpen: (open: boolean) => void;
   setAnimating: (animating: boolean) => void;
   setTheme: (id: string) => void;
   setMenuOpen: (open: boolean) => void;
@@ -94,6 +98,8 @@ export const useSimStore = create<SimState>((set) => ({
   theme: getThemeById(loadThemeId()),
   menuOpen: false,
   docsOpen: false,
+  glossaryOpen: false,
+  wizardOpen: false,
 
   setParam: (key, value) =>
     set((state) => ({ params: { ...state.params, [key]: value } })),
@@ -140,6 +146,10 @@ export const useSimStore = create<SimState>((set) => ({
     set((state) => ({ tuning: { ...state.tuning, [key]: value } })),
 
   setDocsOpen: (open) => set({ docsOpen: open }),
+
+  setGlossaryOpen: (open) => set({ glossaryOpen: open }),
+
+  setWizardOpen: (open) => set({ wizardOpen: open }),
 
   setAnimating: (animating) => set({ animating }),
 

@@ -3,6 +3,8 @@ import { HamburgerMenu } from "../Menu/HamburgerMenu.tsx";
 
 export function Header() {
   const setDocsOpen = useSimStore((s) => s.setDocsOpen);
+  const setGlossaryOpen = useSimStore((s) => s.setGlossaryOpen);
+  const setWizardOpen = useSimStore((s) => s.setWizardOpen);
 
   return (
     <div
@@ -29,7 +31,29 @@ export function Header() {
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => setWizardOpen(true)}
+          className="px-3 py-1.5 rounded-md text-[10px] font-mono uppercase tracking-wider cursor-pointer transition-all max-sm:hidden"
+          style={{
+            background: "var(--c-accent-dim)",
+            border: "1px solid var(--c-accent)",
+            color: "var(--c-accent)",
+          }}
+        >
+          Setup Wizard
+        </button>
+        <button
+          onClick={() => setGlossaryOpen(true)}
+          className="px-3 py-1.5 rounded-md text-[10px] font-mono uppercase tracking-wider cursor-pointer transition-all"
+          style={{
+            background: "var(--c-surface)",
+            border: "1px solid var(--c-border)",
+            color: "var(--c-text-muted)",
+          }}
+        >
+          Glossary
+        </button>
         <button
           onClick={() => setDocsOpen(true)}
           className="px-3 py-1.5 rounded-md text-[10px] font-mono uppercase tracking-wider cursor-pointer transition-all"

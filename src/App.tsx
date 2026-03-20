@@ -1,6 +1,7 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useSimStore } from "./store.ts";
 import { computePhysics } from "./lib/physics.ts";
+import { decodeShareLink } from "./lib/bows.ts";
 import { ThemeProvider } from "./components/Layout/ThemeProvider.tsx";
 import { Header } from "./components/Layout/Header.tsx";
 import { ControlPanel } from "./components/ControlPanel/ControlPanel.tsx";
@@ -15,17 +16,60 @@ import { BallisticsTable } from "./components/Ballistics/BallisticsTable.tsx";
 import { DocsPanel } from "./components/Docs/DocsPanel.tsx";
 import { PlacementGuide } from "./components/Layout/PlacementGuide.tsx";
 import { TuningPanel } from "./components/Tuning/TuningPanel.tsx";
+import { BowDatabase } from "./components/BowDatabase/BowDatabase.tsx";
+import { ProfileManager } from "./components/Profiles/ProfileManager.tsx";
+import { DrawCycleView } from "./components/DrawCycle/DrawCycleView.tsx";
+import { SoundAnalysis } from "./components/SoundAnalysis/SoundAnalysis.tsx";
+import { ShareExport } from "./components/ShareExport/ShareExport.tsx";
+import { GlossaryPanel } from "./components/Glossary/GlossaryPanel.tsx";
+import { SetupWizard } from "./components/Wizard/SetupWizard.tsx";
 
-type Tab = "bow" | "arrow" | "tuning";
+type Tab = "bow" | "arrow" | "tuning" | "database" | "profiles";
 
 export default function App() {
   const params = useSimStore((s) => s.params);
   const weights = useSimStore((s) => s.weights);
   const docsOpen = useSimStore((s) => s.docsOpen);
+  const glossaryOpen = useSimStore((s) => s.glossaryOpen);
+  const wizardOpen = useSimStore((s) => s.wizardOpen);
   const setDocsOpen = useSimStore((s) => s.setDocsOpen);
+  const setGlossaryOpen = useSimStore((s) => s.setGlossaryOpen);
+  const setWizardOpen = useSimStore((s) => s.setWizardOpen);
+  const setParam = useSimStore((s) => s.setParam);
+  const setBowType = useSimStore((s) => s.setBowType);
+  const setWeights = useSimStore((s) => s.setWeights);
+  const setArrow = useSimStore((s) => s.setArrow);
   const [tab, setTab] = useState<Tab>("bow");
 
   const physics = useMemo(() => computePhysics(params, weights), [params, weights]);
+
+  // Handle share link on load
+  useEffect(() => {
+    const shared = decodeShareLink(window.location.href);
+    if (shared) {
+      setBowType(shared.params.bowType);
+      setTimeout(() => {
+        setParam("drawWeight", shared.params.drawWeight);
+        setParam("drawLength", shared.params.drawLength);
+        setParam("stringLength", shared.params.stringLength);
+        setParam("braceHeight", shared.params.braceHeight);
+        setParam("strandCount", shared.params.strandCount);
+        setParam("material", shared.params.material);
+        setParam("tension", shared.params.tension);
+        setWeights(shared.weights);
+        const a = shared.arrow;
+        setArrow("shaft", a.shaft);
+        setArrow("shaftLength", a.shaftLength);
+        setArrow("pointWeight", a.pointWeight);
+        setArrow("nockWeight", a.nockWeight);
+        setArrow("fletchingWeight", a.fletchingWeight);
+        setArrow("fletchingLength", a.fletchingLength);
+        setArrow("wrapWeight", a.wrapWeight);
+      }, 0);
+      // Clean up URL
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
 
   return (
     <ThemeProvider>
@@ -39,19 +83,27 @@ export default function App() {
             style={{ borderRight: "1px solid var(--c-border)", borderColor: "var(--c-border)" }}
           >
             {/* Tab switcher */}
-            <div className="flex" style={{ borderBottom: "1px solid var(--c-border)" }}>
-              {(["bow", "arrow", "tuning"] as Tab[]).map((t) => (
+            <div className="flex flex-wrap" style={{ borderBottom: "1px solid var(--c-border)" }}>
+              {(["bow", "arrow", "tuning", "database", "profiles"] as Tab[]).map((t) => (
                 <button
                   key={t}
                   onClick={() => setTab(t)}
-                  className="flex-1 py-2.5 text-[10px] font-mono uppercase tracking-[2px] cursor-pointer transition-all"
+                  className="flex-1 py-2.5 text-[9px] font-mono uppercase tracking-[1px] cursor-pointer transition-all min-w-fit px-1"
                   style={{
                     background: tab === t ? "var(--c-accent-dim)" : "transparent",
                     color: tab === t ? "var(--c-accent)" : "var(--c-text-dim)",
                     borderBottom: tab === t ? "2px solid var(--c-accent)" : "2px solid transparent",
                   }}
                 >
-                  {t === "bow" ? "Bow & String" : t === "arrow" ? "Arrow" : "Tuning"}
+                  {t === "bow"
+                    ? "Bow"
+                    : t === "arrow"
+                      ? "Arrow"
+                      : t === "tuning"
+                        ? "Tune"
+                        : t === "database"
+                          ? "Database"
+                          : "Profiles"}
                 </button>
               ))}
             </div>
@@ -61,8 +113,12 @@ export default function App() {
                 <ControlPanel />
               ) : tab === "arrow" ? (
                 <ArrowBuilder physics={physics} />
-              ) : (
+              ) : tab === "tuning" ? (
                 <TuningPanel />
+              ) : tab === "database" ? (
+                <BowDatabase />
+              ) : (
+                <ProfileManager />
               )}
             </div>
           </div>
@@ -104,12 +160,22 @@ export default function App() {
               </div>
             </div>
 
+            {/* Draw Cycle Animation */}
+            <div className="mb-4">
+              <DrawCycleView />
+            </div>
+
             {/* Ballistics section */}
             <div className="mb-4">
               <BallisticsTable physics={physics} />
             </div>
 
-            <div className="flex gap-3 flex-wrap">
+            {/* Sound & Vibration Analysis */}
+            <div className="mb-4">
+              <SoundAnalysis physics={physics} />
+            </div>
+
+            <div className="flex gap-3 flex-wrap mb-4">
               <div className="flex-1 min-w-70">
                 <span
                   className="text-[11px] font-mono tracking-[2px] uppercase"
@@ -125,11 +191,18 @@ export default function App() {
                 <PlacementGuide />
               </div>
             </div>
+
+            {/* Share & Export */}
+            <div className="mb-4">
+              <ShareExport physics={physics} />
+            </div>
           </div>
         </div>
       </div>
 
       {docsOpen && <DocsPanel onClose={() => setDocsOpen(false)} />}
+      {glossaryOpen && <GlossaryPanel onClose={() => setGlossaryOpen(false)} />}
+      {wizardOpen && <SetupWizard onClose={() => setWizardOpen(false)} />}
     </ThemeProvider>
   );
 }
